@@ -22,14 +22,18 @@ export const COMFORT_RATINGS = [
 
 export const LAYERS = {
   base: ["Tank", "T-shirt", "Long sleeve", "Thermal"],
-  outer: ["None", "Light layer", "Fleece/Hoodie", "Insulated jacket", "Heavy coat"],
+  mid: ["None", "Overshirt", "Sweater", "Fleece/Hoodie", "Vest"],
+  outer: ["None", "Rain shell", "Light jacket", "Insulated jacket", "Heavy coat"],
   bottom: ["Shorts", "Light pants", "Jeans", "Warm pants", "Thermal leggings"],
   accessories: ["None", "Hat", "Gloves", "Scarf", "Hat + Gloves", "Full set"],
   footwear: ["Sandals", "Sneakers", "Closed shoes", "Boots", "Waterproof boots"],
 };
 
+export const OUTFIT_CATEGORIES = Object.keys(LAYERS);
+
 export const LAYER_ICONS = {
   base: "👕",
+  mid: "👔",
   outer: "🧥",
   bottom: "👖",
   accessories: "🧤",
@@ -38,11 +42,19 @@ export const LAYER_ICONS = {
 
 export const LAYER_LABELS = {
   base: "Base Layer",
+  mid: "Mid Layer",
   outer: "Outer Layer",
   bottom: "Bottoms",
   accessories: "Accessories",
   footwear: "Footwear",
 };
+
+export function normalizeOutfit(outfit = {}) {
+  return OUTFIT_CATEGORIES.reduce((normalized, category) => {
+    normalized[category] = Number.isInteger(outfit[category]) ? outfit[category] : 0;
+    return normalized;
+  }, {});
+}
 
 export function weatherIcon(code) {
   if (code === 0) return "☀️";
@@ -115,18 +127,19 @@ export function generateDemoLogs(count = 25) {
 // reuse from logic; to avoid cycles we define a minimal direct version here
 function phase1Recommend(effectiveTemp, hasPrecip, hasSnow) {
   let outfit;
-  if (effectiveTemp > 25) outfit = { base: 0, outer: 0, bottom: 0, accessories: 0, footwear: 0 };
-  else if (effectiveTemp > 20) outfit = { base: 1, outer: 0, bottom: 1, accessories: 0, footwear: 1 };
-  else if (effectiveTemp > 15) outfit = { base: 2, outer: 1, bottom: 2, accessories: 0, footwear: 1 };
-  else if (effectiveTemp > 10) outfit = { base: 3, outer: 2, bottom: 3, accessories: 0, footwear: 2 };
-  else if (effectiveTemp > 5) outfit = { base: 3, outer: 3, bottom: 3, accessories: 1, footwear: 3 };
-  else outfit = { base: 3, outer: 4, bottom: 3, accessories: 5, footwear: 3 };
+  if (effectiveTemp > 25) outfit = { base: 0, mid: 0, outer: 0, bottom: 0, accessories: 0, footwear: 0 };
+  else if (effectiveTemp > 20) outfit = { base: 1, mid: 0, outer: 0, bottom: 1, accessories: 0, footwear: 1 };
+  else if (effectiveTemp > 15) outfit = { base: 1, mid: 1, outer: 0, bottom: 2, accessories: 0, footwear: 1 };
+  else if (effectiveTemp > 10) outfit = { base: 2, mid: 2, outer: 1, bottom: 2, accessories: 0, footwear: 2 };
+  else if (effectiveTemp > 5) outfit = { base: 2, mid: 3, outer: 2, bottom: 3, accessories: 1, footwear: 3 };
+  else outfit = { base: 3, mid: 3, outer: 4, bottom: 4, accessories: 5, footwear: 3 };
 
   if (hasSnow) {
     outfit.footwear = 4;
     outfit.accessories = Math.max(outfit.accessories, 5);
   } else if (hasPrecip) {
     outfit.footwear = Math.min(outfit.footwear + 1, 4);
+    outfit.outer = Math.max(outfit.outer, 1);
   }
-  return outfit;
+  return normalizeOutfit(outfit);
 }

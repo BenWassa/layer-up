@@ -1,4 +1,4 @@
-import { ACTIVITY_LEVELS, COMFORT_RATINGS, DURATIONS, LAYERS, LAYER_ICONS, weatherIcon } from '../constants';
+import { ACTIVITY_LEVELS, COMFORT_RATINGS, DURATIONS, LAYERS, LAYER_ICONS, OUTFIT_CATEGORIES, normalizeOutfit, weatherIcon } from '../constants';
 import { AppHeader } from '../components/AppHeader';
 
 export function HistoryView({ logs, displayTemp }) {
@@ -23,6 +23,7 @@ export function HistoryView({ logs, displayTemp }) {
       {[...logs].reverse().map(log => {
         const comfort = COMFORT_RATINGS.find(c => c.key === log.comfort);
         const activity = ACTIVITY_LEVELS.find(a => a.key === log.activity);
+        const outfit = normalizeOutfit(log.outfit);
         
         return (
           <article key={log.id} className="history-item">
@@ -36,9 +37,9 @@ export function HistoryView({ logs, displayTemp }) {
               <span>{DURATIONS.find(d => d.key === log.duration)?.label}</span>
             </div>
             <div className="history-outfit">
-              {Object.keys(LAYERS).map(cat => (
+              {OUTFIT_CATEGORIES.map(cat => (
                 <span key={cat} className="history-tag">
-                  {LAYER_ICONS[cat]} {LAYERS[cat][log.outfit[cat]] || LAYERS[cat][0]}
+                  {LAYER_ICONS[cat]} {LAYERS[cat][outfit[cat]] || LAYERS[cat][0]}
                 </span>
               ))}
             </div>

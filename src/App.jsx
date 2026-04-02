@@ -3,6 +3,7 @@ import {
   ACTIVITY_LEVELS,
   DURATIONS,
   generateDemoLogs,
+  normalizeOutfit,
 } from './constants';
 import {
   getRecommendation,
@@ -42,7 +43,7 @@ export default function LayerUp() {
     async function init() {
       const saved = await loadAppState();
       if (cancelled) return;
-      setLogs(saved.logs || []);
+      setLogs((saved.logs || []).map(log => ({ ...log, outfit: normalizeOutfit(log.outfit) })));
       setUnit(saved.unit || 'C');
       setBootstrapped(true);
     }
@@ -129,7 +130,7 @@ export default function LayerUp() {
   const recommendation = weather ? getRecommendation(weather, activity, duration, logs) : null;
 
   const openLog = () => {
-    if (recommendation) setLogOutfit({ ...recommendation.outfit });
+    if (recommendation) setLogOutfit(normalizeOutfit(recommendation.outfit));
     setLogComfort(null);
     setLogNotes('');
     setShowLog(true);
@@ -143,7 +144,7 @@ export default function LayerUp() {
       weather: { ...weather },
       activity,
       duration,
-      outfit: { ...logOutfit },
+      outfit: normalizeOutfit(logOutfit),
       comfort: logComfort,
       notes: logNotes,
     };
@@ -153,7 +154,10 @@ export default function LayerUp() {
 
   const phase = getPhase(logs.length);
   const cycleLogLayer = (category, optionCount) => {
-    setLogOutfit(prev => ({ ...prev, [category]: (prev[category] + 1) % optionCount }));
+    setLogOutfit(prev => {
+      const normalized = normalizeOutfit(prev);
+      return { ...normalized, [category]: (normalized[category] + 1) % optionCount };
+    });
   };
   const clearLogs = () => {
     if (confirmClear) {
