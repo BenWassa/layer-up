@@ -6,10 +6,10 @@ export const ACTIVITY_LEVELS = [
 ];
 
 export const DURATIONS = [
-  { key: "short", label: "<30 min", minutes: 15 },
-  { key: "medium", label: "30–90 min", minutes: 60 },
-  { key: "long", label: "1.5–3 hrs", minutes: 135 },
-  { key: "extended", label: "3+ hrs", minutes: 240 },
+  { key: "short", label: "<30 min", minutes: 15, modifier: 2 },
+  { key: "medium", label: "30–90 min", minutes: 60, modifier: 0 },
+  { key: "long", label: "1.5–3 hrs", minutes: 135, modifier: -2 },
+  { key: "extended", label: "3+ hrs", minutes: 240, modifier: -4 },
 ];
 
 export const COMFORT_RATINGS = [
@@ -59,7 +59,9 @@ export const LAYER_LABELS = {
 
 export function normalizeOutfit(outfit = {}) {
   return OUTFIT_CATEGORIES.reduce((normalized, category) => {
-    normalized[category] = Number.isInteger(outfit[category]) ? outfit[category] : 0;
+    const maxIndex = LAYERS[category].length - 1;
+    const value = Number.isInteger(outfit[category]) ? outfit[category] : 0;
+    normalized[category] = Math.min(Math.max(value, 0), maxIndex);
     return normalized;
   }, {});
 }
@@ -143,10 +145,10 @@ function phase1Recommend(effectiveTemp, hasPrecip, hasSnow) {
   else outfit = { base: 3, mid: 3, outer: 4, bottom: 4, accessories: 5, footwear: 3 };
 
   if (hasSnow) {
-    outfit.footwear = 4;
+    outfit.footwear = LAYERS.footwear.length - 1;
     outfit.accessories = Math.max(outfit.accessories, 5);
   } else if (hasPrecip) {
-    outfit.footwear = Math.min(outfit.footwear + 1, 4);
+    outfit.footwear = Math.min(outfit.footwear + 1, LAYERS.footwear.length - 1);
     outfit.outer = Math.max(outfit.outer, 1);
   }
   return normalizeOutfit(outfit);

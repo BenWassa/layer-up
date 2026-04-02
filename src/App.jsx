@@ -33,6 +33,8 @@ export default function LayerUp() {
   const [logs, setLogs] = useState([]);
   const [unit, setUnit] = useState('C');
   const [showLog, setShowLog] = useState(false);
+  const [logActivity, setLogActivity] = useState('light');
+  const [logDuration, setLogDuration] = useState('medium');
   const [logComfort, setLogComfort] = useState(null);
   const [logColdZones, setLogColdZones] = useState([]);
   const [logHotZones, setLogHotZones] = useState([]);
@@ -133,6 +135,8 @@ export default function LayerUp() {
 
   const openLog = () => {
     if (recommendation) setLogOutfit(normalizeOutfit(recommendation.outfit));
+    setLogActivity(activity);
+    setLogDuration(duration);
     setLogComfort(null);
     setLogColdZones([]);
     setLogHotZones([]);
@@ -146,8 +150,8 @@ export default function LayerUp() {
       id: `log-${Date.now()}`,
       timestamp: Date.now(),
       weather: { ...weather },
-      activity,
-      duration,
+      activity: logActivity,
+      duration: logDuration,
       outfit: normalizeOutfit(logOutfit),
       comfort: logComfort,
       coldZones: logColdZones,
@@ -238,12 +242,12 @@ export default function LayerUp() {
       <LogSheet
         show={showLog}
         recommendation={recommendation}
-        activity={activity}
-        duration={duration}
+        activity={logActivity}
+        duration={logDuration}
         activityOptions={ACTIVITY_LEVELS}
         durationOptions={DURATIONS}
-        onActivityChange={setActivity}
-        onDurationChange={setDuration}
+        onActivityChange={setLogActivity}
+        onDurationChange={setLogDuration}
         logOutfit={logOutfit}
         onCycleLayer={cycleLogLayer}
         logComfort={logComfort}
