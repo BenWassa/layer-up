@@ -17,6 +17,24 @@ Weather and clothing
 
 `npm run preview`
 
+## ⚠️ DEPLOYMENT - READ THIS
+
+**IMPORTANT**: Pushing to GitHub does NOT automatically create a production release.
+
+To deploy a new production version:
+```bash
+npm run release
+```
+
+For beta releases:
+```bash
+npm run release:beta
+```
+
+These commands build the app and deploy to Firebase Hosting + Firestore config in one step.
+
+---
+
 ## Versioning
 
 This project uses semver in `package.json`.
@@ -26,6 +44,7 @@ Useful commands:
 
 - `npm run build` to verify a release candidate locally
 - `npm run deploy` to deploy the current build to Firebase Hosting + Firestore config
+- `npm run release` to build and deploy the current production release in one step
 - `npm run release:beta` to build and deploy the current beta in one step
 
 ## Firebase optional sync (free tier)

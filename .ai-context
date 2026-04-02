@@ -1,0 +1,50 @@
+# AI Context for layer-up Development
+
+## Critical Deployment Information
+
+**GitHub pushes do NOT trigger automatic production releases.**
+
+To create a new production release, you MUST run:
+```bash
+npm run release
+```
+
+For beta releases:
+```bash
+npm run release:beta
+```
+
+These commands:
+1. Build the app
+2. Deploy to Firebase Hosting
+3. Deploy Firestore configuration
+4. All in one step
+
+If code is committed but `npm run release` has not been run, the changes are in Git but NOT in production.
+
+## Project Overview
+- **Framework**: React + Vite
+- **Hosting**: Firebase
+- **Database**: Firestore (with anonymous auth)
+- **Storage**: localStorage (with optional Firebase sync)
+- **Purpose**: Weather-based clothing recommendation engine with personal thermal profiling
+
+## Key Files
+- `src/App.jsx` - Core UI and state management
+- `src/logic.js` - Recommendation algorithm
+- `src/storage.js` - LocalStorage wrapper
+- `src/firebase.js` - Firebase auth and sync
+- `src/constants.js` - Data and helper functions
+- `src/styles.css` - Responsive mobile-first styling
+
+## Views
+- Home - Current recommendations and logging
+- History - Past outfit logs
+- Insights - Personal thermal analytics
+- Settings - Temperature unit and defaults
+
+## Important Notes
+- Always use safe-area-inset CSS for mobile notch support
+- Maintain 16px minimum horizontal padding on views
+- Max viewport width: 480px (adaptive to safe areas)
+- Pixel 8 (412px) is the primary target device
