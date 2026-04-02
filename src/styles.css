@@ -210,9 +210,10 @@ body, #root {
 .layer-icon { font-size: 24px; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--surface3); border-radius: 12px; border: 1px solid var(--border); }
 .layer-info .layer-cat { font-size: 12px; font-weight: 500; color: var(--text3); }
 .layer-info .layer-val { font-size: 15px; font-weight: 600; margin-top: 2px; }
+.layer-warmth-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .layer-warmth { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
 .layer-warmth-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.3s ease; }
-.layer-tap-hint { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-bg); padding: 4px 10px; border-radius: 8px; text-align: center;}
+.layer-cycle-hint { font-size: 13px; color: var(--accent); line-height: 1; }
 
 /* --- BUTTONS --- */
 .log-btn { 
