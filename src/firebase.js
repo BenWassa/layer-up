@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const isEnabled = import.meta.env.VITE_FIREBASE_ENABLED === 'true';
@@ -7,15 +8,13 @@ export function isFirebaseEnabled() {
   return isEnabled;
 }
 
+let app;
+let auth;
 let db;
+let authReadyPromise;
 
-export function getFirestoreDB() {
-  if (!isEnabled) {
-    throw new Error('Firebase not enabled in environment');
-  }
-  if (db) return db;
-
-  const config = {
+function getFirebaseConfig() {
+  return {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -23,23 +22,81 @@ export function getFirestoreDB() {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
   };
+}
+
+export function getFirebaseApp() {
+  if (!isEnabled) {
+    throw new Error('Firebase not enabled in environment');
+  }
+  if (app) return app;
+
+  const config = getFirebaseConfig();
 
   if (!config.apiKey || !config.projectId || !config.appId) {
     throw new Error('Firebase config env variables are missing (VITE_FIREBASE_*).');
   }
 
-  const app = initializeApp(config);
-  db = getFirestore(app);
+  app = initializeApp(config);
+  return app;
+}
+
+export function getFirebaseAuth() {
+  if (auth) return auth;
+  auth = getAuth(getFirebaseApp());
+  return auth;
+}
+
+export function getFirestoreDB() {
+  if (db) return db;
+  db = getFirestore(getFirebaseApp());
   return db;
 }
 
-const STORAGE_DOC = 'layerup-sync-state';
+export async function ensureAnonymousSession() {
+  if (!isEnabled) return null;
+  if (getFirebaseAuth().currentUser) return getFirebaseAuth().currentUser;
+  if (authReadyPromise) return authReadyPromise;
+
+  authReadyPromise = new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      getFirebaseAuth(),
+      async user => {
+        if (user) {
+          unsubscribe();
+          resolve(user);
+          return;
+        }
+
+        try {
+          await signInAnonymously(getFirebaseAuth());
+        } catch (error) {
+          unsubscribe();
+          reject(error);
+        }
+      },
+      error => {
+        unsubscribe();
+        reject(error);
+      }
+    );
+  }).finally(() => {
+    authReadyPromise = null;
+  });
+
+  return authReadyPromise;
+}
+
+async function getUserStateRef() {
+  const user = await ensureAnonymousSession();
+  if (!user) return null;
+  return doc(getFirestoreDB(), 'users', user.uid, 'appState', 'current');
+}
 
 export async function loadFirestoreState() {
   if (!isEnabled) return null;
   try {
-    const firestore = getFirestoreDB();
-    const ref = doc(firestore, 'public', STORAGE_DOC);
+    const ref = await getUserStateRef();
+    if (!ref) return null;
     const snapshot = await getDoc(ref);
     if (snapshot.exists()) {
       return snapshot.data();
@@ -54,8 +111,8 @@ export async function loadFirestoreState() {
 export async function saveFirestoreState(state) {
   if (!isEnabled) return;
   try {
-    const firestore = getFirestoreDB();
-    const ref = doc(firestore, 'public', STORAGE_DOC);
+    const ref = await getUserStateRef();
+    if (!ref) return;
     await setDoc(ref, { ...state, updatedAt: new Date().toISOString() });
   } catch (error) {
     console.warn('Firebase save failed:', error);
