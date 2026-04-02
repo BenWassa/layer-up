@@ -20,6 +20,8 @@ import {
 import { loadAppState, saveAppState } from './storage';
 import './styles.css';
 
+const APP_VERSION = __APP_VERSION__;
+
 export default function LayerUp() {
   const [tab, setTab] = useState('home');
   const [weather, setWeather] = useState(null);
@@ -389,8 +391,8 @@ export default function LayerUp() {
 
           <div style={{ marginTop: 48, textAlign: 'center', color: 'var(--text3)', fontSize: 12 }}>
             <div style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 6, color: 'var(--text)' }}>Layer<span style={{ color: 'var(--accent)' }}>Up</span></div>
-            <div>v1.0 · Thermal Intelligence</div>
-            <div style={{ marginTop: 6 }}>Product Commission · March 2026</div>
+            <div>{APP_VERSION} · Beta</div>
+            <div style={{ marginTop: 6 }}>Thermal Intelligence · April 2026</div>
           </div>
         </div>
       )}

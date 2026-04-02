@@ -17,9 +17,21 @@ Weather and clothing
 
 `npm run preview`
 
+## Versioning
+
+This project uses semver in `package.json`.
+The current test release is `1.0.0-beta.1`.
+
+Useful commands:
+
+- `npm run build` to verify a release candidate locally
+- `npm run deploy` to deploy the current build to Firebase Hosting + Firestore config
+- `npm run release:beta` to build and deploy the current beta in one step
+
 ## Firebase optional sync (free tier)
 
 This app now supports low-friction Firebase sync using anonymous auth plus a user-scoped Firestore document.
+It is intended to use only Firebase Hosting, Authentication, and Firestore. You do not need Cloud Storage for this app.
 
 1. Create a Firebase project.
 2. In Firebase Authentication, enable `Anonymous`.
@@ -36,6 +48,7 @@ This app now supports low-friction Firebase sync using anonymous auth plus a use
 6. Restart `npm run dev`.
 
 Local state is always saved first. When Firebase is enabled, the app signs in anonymously and syncs your state to `users/{uid}/appState/current`.
+If the Firebase console asks you to upgrade to Blaze while setting up Storage, skip Storage entirely. This app does not need a Storage bucket.
 
 ## Firebase deployment
 
@@ -46,7 +59,7 @@ Local state is always saved first. When Firebase is enabled, the app signs in an
 3. Link the repo to your Firebase project:
 	- `firebase use --add`
 4. Deploy hosting and rules:
-	- `firebase deploy`
+	- `firebase deploy --only hosting,firestore`
 
 ## GitHub Pages deployment
 
@@ -65,3 +78,4 @@ GitHub Pages works if you want a fully static build with localStorage only. Fire
 - `src/styles.css` app styles
 - `firebase.json` Firebase Hosting configuration
 - `firestore.rules` Firestore access rules
+- `firestore.indexes.json` Firestore index configuration

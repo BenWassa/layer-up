@@ -1,15 +1,17 @@
 {
   "name": "layer-up",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "firebase deploy --only hosting,firestore",
+    "release:beta": "npm run build && firebase deploy --only hosting,firestore"
   },
   "dependencies": {
-    "firebase": "^10.11.0",
+    "firebase": "^10.14.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
