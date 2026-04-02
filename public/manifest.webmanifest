@@ -3,15 +3,25 @@
   "short_name": "LayerUp",
   "description": "Weather-based layering recommendations with personal logging and Firebase sync.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#080A0F",
-  "theme_color": "#080A0F",
+  "theme_color": "#5B9FE0",
   "icons": [
     {
       "src": "/LayerUp.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "categories": ["weather", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/LayerUp.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ]
 }
