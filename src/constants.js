@@ -13,11 +13,11 @@ export const DURATIONS = [
 ];
 
 export const COMFORT_RATINGS = [
-  { key: "tooCold", label: "Too Cold", icon: "🥶", color: "#4A90D9" },
-  { key: "cold", label: "Cold", icon: "😬", color: "#7EB8DA" },
-  { key: "justRight", label: "Just Right", icon: "😊", color: "#6ABF69" },
-  { key: "warm", label: "Warm", icon: "😅", color: "#E8A838" },
-  { key: "tooHot", label: "Too Hot", icon: "🥵", color: "#D94A4A" },
+  { key: "tooCold", label: "Freezing", icon: "🥶", color: "#4A90D9" },
+  { key: "cold", label: "Chilly", icon: "🧊", color: "#7EB8DA" },
+  { key: "justRight", label: "Comfortable", icon: "😊", color: "#6ABF69" },
+  { key: "warm", label: "Sweating", icon: "😓", color: "#E8A838" },
+  { key: "tooHot", label: "Sweltering", icon: "🥵", color: "#D94A4A" },
 ];
 
 export const LAYERS = {
@@ -28,6 +28,14 @@ export const LAYERS = {
   accessories: ["None", "Toque", "Gloves", "Scarf", "Toque + Gloves", "Full set"],
   footwear: ["Slides", "Trainers", "Boots", "Winter boots"],
 };
+
+export const BODY_ZONES = [
+  { key: "feet", label: "Feet", emoji: "🦶" },
+  { key: "legs", label: "Legs", emoji: "🦵" },
+  { key: "core", label: "Core", emoji: "🫁" },
+  { key: "hands", label: "Hands", emoji: "🤲" },
+  { key: "head", label: "Head", emoji: "🧢" },
+];
 
 export const OUTFIT_CATEGORIES = Object.keys(LAYERS);
 

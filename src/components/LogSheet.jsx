@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { COMFORT_RATINGS } from '../constants';
+import { COMFORT_RATINGS, BODY_ZONES } from '../constants';
 import { OutfitLayers } from './OutfitLayers';
 import { OptionSelector } from './OptionSelector';
 
@@ -20,6 +20,10 @@ export function LogSheet({
   onCycleLayer,
   logComfort,
   onComfortChange,
+  logColdZones,
+  onColdZoneToggle,
+  logHotZones,
+  onHotZoneToggle,
   logNotes,
   onNotesChange,
   onClose,
@@ -203,6 +207,43 @@ export function LogSheet({
               <span className="comfort-label">{cr.label}</span>
             </button>
           ))}
+        </div>
+
+        <div className="zone-section">
+          <div className="zone-group">
+            <div className="zone-group-label">❄️ Too cold anywhere?</div>
+            <div className="zone-row">
+              {BODY_ZONES.map(z => (
+                <button
+                  key={z.key}
+                  type="button"
+                  className={`zone-btn ${logColdZones.includes(z.key) ? 'active cold' : ''}`}
+                  onClick={() => onColdZoneToggle(z.key)}
+                  aria-pressed={logColdZones.includes(z.key)}
+                >
+                  <span aria-hidden="true">{z.emoji}</span>
+                  <span>{z.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="zone-group">
+            <div className="zone-group-label">🔥 Too warm anywhere?</div>
+            <div className="zone-row">
+              {BODY_ZONES.map(z => (
+                <button
+                  key={z.key}
+                  type="button"
+                  className={`zone-btn ${logHotZones.includes(z.key) ? 'active hot' : ''}`}
+                  onClick={() => onHotZoneToggle(z.key)}
+                  aria-pressed={logHotZones.includes(z.key)}
+                >
+                  <span aria-hidden="true">{z.emoji}</span>
+                  <span>{z.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <textarea

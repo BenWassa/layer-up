@@ -34,6 +34,8 @@ export default function LayerUp() {
   const [unit, setUnit] = useState('C');
   const [showLog, setShowLog] = useState(false);
   const [logComfort, setLogComfort] = useState(null);
+  const [logColdZones, setLogColdZones] = useState([]);
+  const [logHotZones, setLogHotZones] = useState([]);
   const [logNotes, setLogNotes] = useState('');
   const [logOutfit, setLogOutfit] = useState(null);
   const [bootstrapped, setBootstrapped] = useState(false);
@@ -132,6 +134,8 @@ export default function LayerUp() {
   const openLog = () => {
     if (recommendation) setLogOutfit(normalizeOutfit(recommendation.outfit));
     setLogComfort(null);
+    setLogColdZones([]);
+    setLogHotZones([]);
     setLogNotes('');
     setShowLog(true);
   };
@@ -146,6 +150,8 @@ export default function LayerUp() {
       duration,
       outfit: normalizeOutfit(logOutfit),
       comfort: logComfort,
+      coldZones: logColdZones,
+      hotZones: logHotZones,
       notes: logNotes,
     };
     setLogs(prev => [...prev, entry]);
@@ -242,6 +248,10 @@ export default function LayerUp() {
         onCycleLayer={cycleLogLayer}
         logComfort={logComfort}
         onComfortChange={setLogComfort}
+        logColdZones={logColdZones}
+        onColdZoneToggle={key => setLogColdZones(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])}
+        logHotZones={logHotZones}
+        onHotZoneToggle={key => setLogHotZones(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])}
         logNotes={logNotes}
         onNotesChange={setLogNotes}
         onClose={() => setShowLog(false)}
