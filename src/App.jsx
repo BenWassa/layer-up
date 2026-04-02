@@ -70,17 +70,40 @@ export default function LayerUp() {
       let lat = defaultLoc.lat;
       let lng = defaultLoc.lng;
 
-      if (navigator?.geolocation) {
-        try {
-          const getPos = new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000, maximumAge: 60000 });
-          });
-          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
-          const pos = await Promise.race([getPos, timeout]);
-          lat = pos.coords.latitude;
-          lng = pos.coords.longitude;
-        } catch (geoErr) {
-          console.warn('Geolocation failed or timed out:', geoErr);
+      let ipCity = null;
+
+      // Start both location methods in parallel
+      const ipGeoPromise = fetch('https://ipapi.co/json/').then(r => r.json()).catch(() => null);
+
+      const browserGeoPromise = navigator?.geolocation
+        ? new Promise((resolve) => {
+            navigator.geolocation.getCurrentPosition(
+              (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+              () => resolve(null),
+              { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
+            );
+          })
+        : Promise.resolve(null);
+
+      // Give browser geo up to 3s before falling through to IP geo
+      const browserWithTimeout = Promise.race([
+        browserGeoPromise,
+        new Promise((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+
+      const browserResult = await browserWithTimeout;
+      if (browserResult) {
+        lat = browserResult.lat;
+        lng = browserResult.lng;
+      } else {
+        // Browser geo timed out or failed — use IP geo (already in flight)
+        const ipData = await ipGeoPromise;
+        if (ipData?.latitude && ipData?.longitude) {
+          lat = ipData.latitude;
+          lng = ipData.longitude;
+          ipCity = ipData.city || null;
+        } else {
+          console.warn('Geolocation and IP geo both failed, using default location');
         }
       }
 
@@ -90,13 +113,23 @@ export default function LayerUp() {
         const data = await res.json();
         const c = data.current;
 
-        let locationName = `${lat.toFixed(2)}°, ${lng.toFixed(2)}°`;
+        let locationName = ipCity || `${lat.toFixed(2)}°, ${lng.toFixed(2)}°`;
         try {
-          const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${lat.toFixed(2)},${lng.toFixed(2)}&count=1`);
+          const geoRes = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
           const geoData = await geoRes.json();
-          if (geoData.results?.[0]) locationName = `${geoData.results[0].name}, ${geoData.results[0].country_code}`;
+          if (geoData?.address) {
+            const a = geoData.address;
+            const neighbourhood = a.neighbourhood || a.suburb || a.quarter || a.village || a.hamlet;
+            const city = a.city || a.town || a.municipality;
+            if (neighbourhood && city) locationName = `${neighbourhood}, ${city}`;
+            else if (city) locationName = city;
+            else if (neighbourhood) locationName = neighbourhood;
+          }
         } catch {
-          // keep fallback coords
+          // keep fallback
         }
 
         if (!cancelled) {
