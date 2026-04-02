@@ -3,6 +3,10 @@ import { COMFORT_RATINGS } from '../constants';
 import { OutfitLayers } from './OutfitLayers';
 import { OptionSelector } from './OptionSelector';
 
+const CLOSE_THRESHOLD_PX = 120;
+const CLOSE_VELOCITY_PX_MS = 0.5;
+const OVERLAY_MAX_OPACITY = 0.45;
+
 export function LogSheet({
   show,
   recommendation,
@@ -21,7 +25,11 @@ export function LogSheet({
   onClose,
   onSubmit,
 }) {
-  const swipeStartY = useRef(null);
+  const overlayRef = useRef(null);
+  const sheetRef = useRef(null);
+  const dragStartY = useRef(null);
+  const lastY = useRef(null);
+  const lastTime = useRef(null);
 
   useEffect(() => {
     if (!show) return undefined;
@@ -59,31 +67,88 @@ export function LogSheet({
 
   if (!show || !recommendation) return null;
 
-  const handleSwipeStart = event => {
-    swipeStartY.current = event.touches[0]?.clientY ?? null;
+  const snapClose = () => {
+    const sheet = sheetRef.current;
+    const overlay = overlayRef.current;
+    if (sheet) {
+      sheet.style.transition = 'transform 0.28s cubic-bezier(0.32, 0, 0.67, 0)';
+      sheet.style.transform = 'translateY(110%)';
+    }
+    if (overlay) {
+      overlay.style.transition = 'background-color 0.28s ease';
+      overlay.style.backgroundColor = 'rgba(0,0,0,0)';
+    }
+    setTimeout(onClose, 280);
   };
 
-  const handleSwipeEnd = event => {
-    const endY = event.changedTouches[0]?.clientY;
-    if (swipeStartY.current == null || endY == null) return;
+  const snapOpen = () => {
+    const sheet = sheetRef.current;
+    const overlay = overlayRef.current;
+    if (sheet) {
+      sheet.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      sheet.style.transform = 'translateY(0)';
+    }
+    if (overlay) {
+      overlay.style.transition = 'background-color 0.4s ease';
+      overlay.style.backgroundColor = `rgba(0,0,0,${OVERLAY_MAX_OPACITY})`;
+    }
+  };
 
-    if (endY - swipeStartY.current > 60) onClose();
-    swipeStartY.current = null;
+  const handleDragStart = event => {
+    const y = event.touches[0]?.clientY;
+    dragStartY.current = y;
+    lastY.current = y;
+    lastTime.current = Date.now();
+    if (sheetRef.current) sheetRef.current.style.transition = 'none';
+    if (overlayRef.current) overlayRef.current.style.transition = 'none';
+  };
+
+  const handleDragMove = event => {
+    if (dragStartY.current == null) return;
+    const y = event.touches[0]?.clientY;
+    const deltaY = Math.max(0, y - dragStartY.current);
+    lastY.current = y;
+    lastTime.current = Date.now();
+
+    if (sheetRef.current) {
+      sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+    }
+    if (overlayRef.current) {
+      const opacity = Math.max(0, OVERLAY_MAX_OPACITY * (1 - deltaY / 200));
+      overlayRef.current.style.backgroundColor = `rgba(0,0,0,${opacity})`;
+    }
+  };
+
+  const handleDragEnd = event => {
+    if (dragStartY.current == null) return;
+    const endY = event.changedTouches[0]?.clientY;
+    const deltaY = Math.max(0, endY - dragStartY.current);
+    const elapsed = Date.now() - lastTime.current;
+    const velocity = elapsed > 0 ? (endY - lastY.current) / elapsed : 0;
+    dragStartY.current = null;
+
+    if (deltaY > CLOSE_THRESHOLD_PX || velocity > CLOSE_VELOCITY_PX_MS) {
+      snapClose();
+    } else {
+      snapOpen();
+    }
   };
 
   return (
-    <div 
-      className="sheet-overlay" 
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+    <div
+      ref={overlayRef}
+      className="sheet-overlay"
+      onClick={e => { if (e.target === e.currentTarget) snapClose(); }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="sheet-title"
     >
-      <div className="sheet">
+      <div ref={sheetRef} className="sheet">
         <div
           className="sheet-grab"
-          onTouchStart={handleSwipeStart}
-          onTouchEnd={handleSwipeEnd}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
         >
           <div className="sheet-handle" aria-hidden="true" />
         </div>
@@ -126,10 +191,10 @@ export function LogSheet({
               key={cr.key}
               type="button"
               className={`comfort-btn ${logComfort === cr.key ? 'active' : ''}`}
-              style={{ 
-                color: logComfort === cr.key ? cr.color : undefined, 
+              style={{
+                color: logComfort === cr.key ? cr.color : undefined,
                 borderColor: logComfort === cr.key ? cr.color : undefined,
-                backgroundColor: logComfort === cr.key ? `${cr.color}15` : undefined // 15 is hex for ~8% opacity
+                backgroundColor: logComfort === cr.key ? `${cr.color}15` : undefined
               }}
               onClick={() => onComfortChange(cr.key)}
               aria-pressed={logComfort === cr.key}
@@ -146,13 +211,13 @@ export function LogSheet({
           rows={3}
           value={logNotes}
           onChange={e => onNotesChange(e.target.value)}
-          style={{ resize: 'none' }} /* Prevent mobile layout breaking */
+          style={{ resize: 'none' }}
         />
-        
-        <button 
-          type="button" 
-          className="sheet-submit log-btn" 
-          disabled={!logComfort} 
+
+        <button
+          type="button"
+          className="sheet-submit log-btn"
+          disabled={!logComfort}
           onClick={onSubmit}
           style={{ width: '100%', margin: '20px 0 0 0', opacity: !logComfort ? 0.5 : 1 }}
         >

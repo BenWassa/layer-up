@@ -22,11 +22,11 @@ export const COMFORT_RATINGS = [
 
 export const LAYERS = {
   base: ["Tank", "T-shirt", "Long sleeve", "Thermal"],
-  mid: ["None", "Overshirt", "Sweater", "Fleece/Hoodie", "Vest"],
-  outer: ["None", "Rain shell", "Light jacket", "Insulated jacket", "Heavy coat"],
+  mid: ["None", "Overshirt", "Hoodie", "Fleece"],
+  outer: ["None", "Rain jacket", "Light jacket", "Insulated jacket", "Parka"],
   bottom: ["Shorts", "Light pants", "Jeans", "Warm pants", "Thermal leggings"],
-  accessories: ["None", "Hat", "Gloves", "Scarf", "Hat + Gloves", "Full set"],
-  footwear: ["Sandals", "Sneakers", "Closed shoes", "Boots", "Waterproof boots"],
+  accessories: ["None", "Toque", "Gloves", "Scarf", "Toque + Gloves", "Full set"],
+  footwear: ["Slides", "Trainers", "Boots", "Winter boots"],
 };
 
 export const OUTFIT_CATEGORIES = Object.keys(LAYERS);

@@ -434,8 +434,12 @@ body, #root {
 .toggle-opt { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 7px 10px; font-size: 12px; cursor: pointer; }
 .toggle-opt.active { background: rgba(91, 159, 224, 0.15); border-color: var(--accent); color: var(--accent); }
 
-.sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: grid; place-items: end center; padding: 16px; z-index: 110; overflow: hidden; overscroll-behavior: contain; touch-action: none; }
-.sheet { width: min(100%, 430px); background: var(--surface); border-radius: 24px 24px 16px 16px; border: 1px solid var(--border); padding: 14px; box-shadow: 0 -16px 30px rgba(0,0,0,0.5); }
+@keyframes sheet-enter {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: grid; place-items: end center; padding: 16px; z-index: 110; overflow: hidden; overscroll-behavior: contain; }
+.sheet { width: min(100%, 430px); max-height: 90dvh; overflow-y: auto; background: var(--surface); border-radius: 24px 24px 16px 16px; border: 1px solid var(--border); padding: 14px; box-shadow: 0 -16px 30px rgba(0,0,0,0.5); animation: sheet-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
 .sheet-grab { display: flex; justify-content: center; padding: 2px 0 10px; touch-action: none; }
 .sheet-handle { width: 40px; height: 5px; background: var(--border); border-radius: 999px; }
 .sheet-header { display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
