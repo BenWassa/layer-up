@@ -12,7 +12,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   server: {
-    open: true,
+    host: true,
     port: 5173
   }
 });
