@@ -23,10 +23,16 @@ export function LogSheet({
   if (!show || !recommendation) return null;
 
   return (
-    <div className="sheet-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div 
+      className="sheet-overlay" 
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sheet-title"
+    >
       <div className="sheet">
-        <div className="sheet-handle" />
-        <div className="sheet-title">How did it go?</div>
+        <div className="sheet-handle" aria-hidden="true" />
+        <h2 id="sheet-title" className="sheet-title">How did it go?</h2>
 
         <OptionSelector
           label="Activity"
@@ -45,7 +51,7 @@ export function LogSheet({
           compact
         />
 
-        <div className="selector-section" style={{ padding: 0, marginBottom: 20 }}>
+        <div className="selector-section" style={{ padding: 0, marginBottom: 24 }}>
           <div className="selector-label">What You Wore (tap to adjust)</div>
           {logOutfit ? (
             <OutfitLayers
@@ -61,12 +67,18 @@ export function LogSheet({
           {COMFORT_RATINGS.map(cr => (
             <button
               key={cr.key}
+              type="button"
               className={`comfort-btn ${logComfort === cr.key ? 'active' : ''}`}
-              style={{ color: logComfort === cr.key ? cr.color : undefined, borderColor: logComfort === cr.key ? cr.color : undefined }}
+              style={{ 
+                color: logComfort === cr.key ? cr.color : undefined, 
+                borderColor: logComfort === cr.key ? cr.color : undefined,
+                backgroundColor: logComfort === cr.key ? `${cr.color}15` : undefined // 15 is hex for ~8% opacity
+              }}
               onClick={() => onComfortChange(cr.key)}
+              aria-pressed={logComfort === cr.key}
             >
-              <div className="comfort-icon">{cr.icon}</div>
-              <div className="comfort-label">{cr.label}</div>
+              <span className="comfort-icon" aria-hidden="true">{cr.icon}</span>
+              <span className="comfort-label">{cr.label}</span>
             </button>
           ))}
         </div>
@@ -74,11 +86,21 @@ export function LogSheet({
         <textarea
           className="notes-input"
           placeholder="Notes (optional) — illness, unusual setting…"
-          rows={2}
+          rows={3}
           value={logNotes}
           onChange={e => onNotesChange(e.target.value)}
+          style={{ resize: 'none' }} /* Prevent mobile layout breaking */
         />
-        <button className="sheet-submit" disabled={!logComfort} onClick={onSubmit}>Save Log</button>
+        
+        <button 
+          type="button" 
+          className="sheet-submit log-btn" 
+          disabled={!logComfort} 
+          onClick={onSubmit}
+          style={{ width: '100%', margin: '20px 0 0 0', opacity: !logComfort ? 0.5 : 1 }}
+        >
+          Save Log
+        </button>
       </div>
     </div>
   );

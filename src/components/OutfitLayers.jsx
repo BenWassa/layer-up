@@ -12,8 +12,9 @@ export function OutfitLayers({ outfit, editable = false, onCycleLayer }) {
           <div
             key={cat}
             className="outfit-layer"
-            style={editable ? { cursor: 'pointer' } : undefined}
+            style={editable ? { cursor: 'pointer', touchAction: 'manipulation' } : undefined}
             onClick={editable ? () => onCycleLayer(cat, options.length) : undefined}
+            role={editable ? 'button' : 'group'}
           >
             <div className="layer-icon">{LAYER_ICONS[cat]}</div>
             <div className="layer-info">
@@ -21,7 +22,7 @@ export function OutfitLayers({ outfit, editable = false, onCycleLayer }) {
               <div className="layer-val">{options[idx] || options[0]}</div>
             </div>
             {editable ? (
-              <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--text3)' }}>Tap</div>
+              <div className="layer-tap-hint">Tap</div>
             ) : (
               <div className="layer-warmth">
                 <div

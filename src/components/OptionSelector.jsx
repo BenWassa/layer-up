@@ -7,7 +7,7 @@ export function OptionSelector({
   compact = false,
 }) {
   return (
-    <div className="selector-section" style={compact ? { padding: 0, marginBottom: 20 } : undefined}>
+    <div className="selector-section" style={compact ? { margin: '16px 0' } : undefined}>
       <div className="selector-label">{label}</div>
       <div className="selector-row">
         {options.map(option => (
@@ -15,6 +15,7 @@ export function OptionSelector({
             key={option.key}
             className={`sel-btn ${selectedKey === option.key ? 'active' : ''}`}
             onClick={() => onSelect(option.key)}
+            aria-pressed={selectedKey === option.key}
           >
             {showIcons ? <span className="sel-icon">{option.icon}</span> : null}
             <span className="sel-label">{option.label}</span>

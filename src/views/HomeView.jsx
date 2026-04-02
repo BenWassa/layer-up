@@ -21,7 +21,7 @@ export function HomeView({
   toF,
 }) {
   return (
-    <div className="home-page">
+    <main className="home-page">
       <AppHeader phase={phase} logCount={logs.length} />
 
       <div className="weather-card">
@@ -32,7 +32,10 @@ export function HomeView({
               {unit === 'F' ? toF(weather.temp) : weather.temp}
               <span className="weather-temp-unit">°{unit}</span>
             </div>
-            <div className="weather-desc">{weatherIcon(weather.weatherCode)} {weatherDesc(weather.weatherCode)}</div>
+            <div className="weather-desc">
+              <span>{weatherIcon(weather.weatherCode)}</span> 
+              <span>{weatherDesc(weather.weatherCode)}</span>
+            </div>
           </div>
         </div>
         <div className="weather-details">
@@ -80,16 +83,16 @@ export function HomeView({
       ) : null}
 
       <button className="log-btn" onClick={onOpenLog}>Log How It Went</button>
-    </div>
+    </main>
   );
 }
 
 export function HomeErrorView({ error }) {
   return (
-    <div style={{ padding: 40, textAlign: 'center' }}>
-      <div className="header"><div className="logo">Layer<span>Up</span></div></div>
-      <p style={{ color: 'var(--text3)', marginTop: 40, fontSize: 15 }}>{error}</p>
-      <button className="log-btn" style={{ marginTop: 24 }} onClick={() => window.location.reload()}>Retry</button>
+    <div style={{ padding: 40, textAlign: 'center', minHeight: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div className="header" style={{ justifyContent: 'center' }}><div className="logo">Layer<span>Up</span></div></div>
+      <p style={{ color: 'var(--text3)', marginTop: 24, fontSize: 16 }}>{error}</p>
+      <button className="log-btn" style={{ marginTop: 32 }} onClick={() => window.location.reload()}>Retry</button>
     </div>
   );
 }
