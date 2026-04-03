@@ -32,6 +32,7 @@ export default function LayerUp() {
   const [confirmClear, setConfirmClear] = useState(false);
   const [logs, setLogs] = useState([]);
   const [unit, setUnit] = useState('C');
+  const [theme, setTheme] = useState('light');
   const [showLog, setShowLog] = useState(false);
   const [logActivity, setLogActivity] = useState('light');
   const [logDuration, setLogDuration] = useState('medium');
@@ -49,6 +50,7 @@ export default function LayerUp() {
       if (cancelled) return;
       setLogs((saved.logs || []).map(log => ({ ...log, outfit: normalizeOutfit(log.outfit) })));
       setUnit(saved.unit || 'C');
+      setTheme(saved.theme || 'light');
       setBootstrapped(true);
     }
     init();
@@ -57,8 +59,13 @@ export default function LayerUp() {
 
   useEffect(() => {
     if (!bootstrapped) return;
-    saveAppState({ logs, unit });
-  }, [logs, unit, bootstrapped]);
+    saveAppState({ logs, unit, theme });
+  }, [logs, unit, theme, bootstrapped]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     let cancelled = false;
@@ -261,9 +268,11 @@ export default function LayerUp() {
       {tab === 'settings' ? (
         <SettingsView
           unit={unit}
+          theme={theme}
           activity={activity}
           activityOptions={ACTIVITY_LEVELS}
           onUnitChange={setUnit}
+          onThemeChange={setTheme}
           onActivityChange={setActivity}
           onLoadDemoLogs={() => setLogs(prev => [...prev, ...generateDemoLogs(25)])}
           confirmClear={confirmClear}

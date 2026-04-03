@@ -2,9 +2,11 @@ import { AppHeader } from '../components/AppHeader';
 
 export function SettingsView({
   unit,
+  theme,
   activity,
   activityOptions,
   onUnitChange,
+  onThemeChange,
   onActivityChange,
   onLoadDemoLogs,
   confirmClear,
@@ -29,6 +31,17 @@ export function SettingsView({
         <div className="toggle-group" role="group" aria-label="Temperature Unit">
           <button type="button" className={`toggle-opt ${unit === 'C' ? 'active' : ''}`} onClick={() => onUnitChange('C')}>°C</button>
           <button type="button" className={`toggle-opt ${unit === 'F' ? 'active' : ''}`} onClick={() => onUnitChange('F')}>°F</button>
+        </div>
+      </section>
+
+      <section className="content-panel setting-row">
+        <div className="setting-info">
+          <div className="setting-label">Appearance</div>
+          <div className="setting-desc">Switch between the new editorial light theme and a dark mode variant.</div>
+        </div>
+        <div className="toggle-group" role="group" aria-label="Appearance">
+          <button type="button" className={`toggle-opt ${theme === 'light' ? 'active' : ''}`} onClick={() => onThemeChange('light')}>Light</button>
+          <button type="button" className={`toggle-opt ${theme === 'dark' ? 'active' : ''}`} onClick={() => onThemeChange('dark')}>Dark</button>
         </div>
       </section>
 
