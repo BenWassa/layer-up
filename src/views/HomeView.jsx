@@ -1,14 +1,21 @@
 import { useMemo } from 'react';
 import { AppHeader } from '../components/AppHeader';
 import { WeatherInfo, LayerPlan, getWeatherColors } from '../components/WeatherHero';
+import { ActivityDurationStrip } from '../components/ActivityDurationStrip';
 
 export function HomeView({
   weather,
   unit,
   phase,
   logs,
+  activity,
+  duration,
+  activityOptions,
+  durationOptions,
   recommendation,
   onOpenLog,
+  onActivityChange,
+  onDurationChange,
   getPhaseLabel,
 }) {
   const wxColors = useMemo(
@@ -21,19 +28,31 @@ export function HomeView({
       className="page home-page"
       style={{ '--wx-a': wxColors.a, '--wx-b': wxColors.b }}
     >
-      <AppHeader phase={phase} logCount={logs.length} />
+      <AppHeader phase={phase} logCount={logs.length} compact />
 
       <div className="home-body">
-        <WeatherInfo weather={weather} unit={unit} />
+        <section className="home-landing">
+          {recommendation ? (
+            <LayerPlan
+              recommendation={recommendation}
+              logs={logs}
+              getPhaseLabel={getPhaseLabel}
+              onOpenLog={onOpenLog}
+            />
+          ) : null}
 
-        {recommendation ? (
-          <LayerPlan
-            recommendation={recommendation}
-            logs={logs}
-            getPhaseLabel={getPhaseLabel}
-            onOpenLog={onOpenLog}
-          />
-        ) : null}
+          <div className="home-supporting">
+            <WeatherInfo weather={weather} unit={unit} />
+            <ActivityDurationStrip
+              activity={activity}
+              duration={duration}
+              activityOptions={activityOptions}
+              durationOptions={durationOptions}
+              onActivityChange={onActivityChange}
+              onDurationChange={onDurationChange}
+            />
+          </div>
+        </section>
       </div>
     </main>
   );
