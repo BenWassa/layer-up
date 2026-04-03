@@ -25,8 +25,13 @@ export function HomeView({
       <AppHeader phase={phase} logCount={logs.length} />
 
       <section className="hero-panel">
+        <div className="panel-heading hero-copy">
+          <div>
+            <h1 className="panel-title">Current Conditions</h1>
+          </div>
+        </div>
+
         <div className="hero-copy">
-          <div className="section-kicker">Current Conditions</div>
           <div className="weather-location">
             <span aria-hidden="true">◦</span>
             <span>{weather.location}</span>
@@ -77,7 +82,6 @@ export function HomeView({
       <section className="content-panel controls-panel">
         <div className="panel-heading">
           <div>
-            <div className="section-kicker">Inputs</div>
             <h1 className="panel-title">Tune today&apos;s recommendation</h1>
           </div>
           <p className="panel-copy">
@@ -105,7 +109,6 @@ export function HomeView({
         <section className="content-panel recommendation-panel">
           <div className="panel-heading">
             <div>
-              <div className="section-kicker">Recommendation</div>
               <h2 className="panel-title">Today&apos;s layer plan</h2>
             </div>
             <div className="rec-conf">
