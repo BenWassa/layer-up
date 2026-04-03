@@ -5,3 +5,7 @@ build/
 .DS_Store
 .firebase/
 firebase-debug.log
+.agents/
+.claude/
+.impeccable.md
+skills-lock.json
