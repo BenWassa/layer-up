@@ -1,4 +1,12 @@
-import { LAYERS, OUTFIT_CATEGORIES, normalizeOutfit, weatherDesc, getTempColor, toF } from '../constants';
+import {
+  LAYERS,
+  OUTFIT_CATEGORIES,
+  normalizeOutfit,
+  weatherDesc,
+  weatherIcon,
+  getTempColor,
+  toF,
+} from '../constants';
 
 // Returns two rgba color stops for the atmospheric page gradient.
 // Applied at low opacity so they tint rather than replace the existing bg.
@@ -23,48 +31,59 @@ export function getWeatherColors(code, feelsLike) {
   return { a: 'rgba(28, 78, 172, 0.28)', b: 'rgba(68, 118, 198, 0.16)' };
 }
 
-// Main weather readout beneath the compact strip.
+function formatPrecipitationValue(value) {
+  if (!value) return 'None';
+  if (value < 1) return '<1 mm';
+  return `${value.toFixed(1)} mm`;
+}
+
+// Main weather readout above the outfit plan.
 export function WeatherHero({ weather, unit }) {
   const tempColor = getTempColor(weather.feelsLike);
-  const displayedTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
+  const displayedTemp = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
   const displayedFeelsLike = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
-
-  const badges = [];
-  if (weather.windSpeed > 40) badges.push({ key: 'wind', label: 'Strong wind', icon: '💨' });
-  else if (weather.windSpeed > 20) badges.push({ key: 'wind', label: 'Windy', icon: '💨' });
-  if (weather.humidity > 75) badges.push({ key: 'humid', label: 'Humid', icon: '💧' });
-  if (weather.precipitation > 0) badges.push({ key: 'precip', label: 'Rain', icon: '🌧️' });
+  const displayedActualTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
 
   return (
     <div className="home-weather">
-      <div className="home-location">
-        <span className="home-location-dot" aria-hidden="true">◦</span>
-        {weather.location}
-      </div>
-
-      <div className="home-temps">
-        <span className="home-temp" style={{ color: tempColor }}>
-          {displayedTemp}°{unit}
-        </span>
-        <span className="home-feels" style={{ color: tempColor }}>
-          feels like {displayedFeelsLike}°
-        </span>
-      </div>
-
-      <div className="home-condition">
-        {weatherDesc(weather.weatherCode)}
-      </div>
-
-      {badges.length > 0 && (
-        <div className="home-badges">
-          {badges.map((b) => (
-            <span key={b.key} className="home-badge">
-              <span aria-hidden="true">{b.icon}</span>
-              {b.label}
+      <div className="weather-grid">
+        <div className="weather-cell weather-cell-temp">
+          <div className="weather-cell-kicker">Temperature</div>
+          <div className="home-location">
+            <span className="home-location-dot" aria-hidden="true">◦</span>
+            {weather.location}
+          </div>
+          <div className="home-temps">
+            <span className="home-temp" style={{ color: tempColor }}>
+              {displayedTemp}°{unit}
             </span>
-          ))}
+            <span className="home-feels" style={{ color: tempColor }}>
+              feels like {displayedFeelsLike}° • actual {displayedActualTemp}°
+              {unit}
+            </span>
+          </div>
         </div>
-      )}
+
+        <div className="weather-cell weather-cell-summary">
+          <div className="weather-cell-kicker">Weather</div>
+          <div className="weather-summary-icon" aria-hidden="true">
+            {weatherIcon(weather.weatherCode)}
+          </div>
+          <div className="weather-summary-label">{weatherDesc(weather.weatherCode)}</div>
+        </div>
+
+        <div className="weather-cell weather-cell-metric">
+          <div className="weather-cell-kicker">Humidity</div>
+          <div className="weather-metric-value">{weather.humidity}%</div>
+        </div>
+
+        <div className="weather-cell weather-cell-metric">
+          <div className="weather-cell-kicker">Precip</div>
+          <div className="weather-metric-value">
+            {formatPrecipitationValue(weather.precipitation)}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
