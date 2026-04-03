@@ -1,7 +1,7 @@
-import { weatherDesc, weatherIcon } from '../constants';
 import { AppHeader } from '../components/AppHeader';
-import { OptionSelector } from '../components/OptionSelector';
 import { OutfitLayers } from '../components/OutfitLayers';
+import { WeatherStrip } from '../components/WeatherStrip';
+import { ActivityDurationStrip } from '../components/ActivityDurationStrip';
 
 export function HomeView({
   weather,
@@ -24,86 +24,12 @@ export function HomeView({
     <main className="page home-page">
       <AppHeader phase={phase} logCount={logs.length} />
 
-      <section className="hero-panel">
-        <div className="panel-heading hero-copy">
-          <div>
-            <h1 className="panel-title">Current Conditions</h1>
-          </div>
-        </div>
-
-        <div className="hero-copy">
-          <div className="weather-location">
-            <span aria-hidden="true">◦</span>
-            <span>{weather.location}</span>
-          </div>
-          <div className="weather-main">
-            <div className="weather-temp">
-              {unit === 'F' ? toF(weather.temp) : weather.temp}
-              <span className="weather-temp-unit">°{unit}</span>
-            </div>
-            <div className="weather-status">
-              <div className="weather-status-icon" aria-hidden="true">
-                {weatherIcon(weather.weatherCode)}
-              </div>
-              <div>
-                <div className="weather-desc">
-                  {weatherDesc(weather.weatherCode)}
-                </div>
-                <div className="weather-caption">
-                  Dress for how it feels, not just the headline temperature.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="weather-details">
-          <div className="weather-detail">
-            <div className="weather-detail-label">Feels Like</div>
-            <div className="weather-detail-val">
-              {displayTemp(weather.feelsLike)}
-            </div>
-          </div>
-          <div className="weather-detail">
-            <div className="weather-detail-label">Wind</div>
-            <div className="weather-detail-val">{weather.windSpeed} km/h</div>
-          </div>
-          <div className="weather-detail">
-            <div className="weather-detail-label">Humidity</div>
-            <div className="weather-detail-val">{weather.humidity}%</div>
-          </div>
-          <div className="weather-detail">
-            <div className="weather-detail-label">Precipitation</div>
-            <div className="weather-detail-val">{weather.precipitation} mm</div>
-          </div>
-        </div>
-      </section>
-
-      <section className="content-panel controls-panel">
-        <div className="panel-heading">
-          <div>
-            <h1 className="panel-title">Tune today&apos;s recommendation</h1>
-          </div>
-          <p className="panel-copy">
-            Set how hard you&apos;re moving and how long you&apos;ll be outside.
-          </p>
-        </div>
-
-        <OptionSelector
-          label="Activity"
-          options={activityOptions}
-          selectedKey={activity}
-          onSelect={onActivityChange}
-          showIcons
-        />
-
-        <OptionSelector
-          label="Duration"
-          options={durationOptions}
-          selectedKey={duration}
-          onSelect={onDurationChange}
-        />
-      </section>
+      <WeatherStrip
+        weather={weather}
+        unit={unit}
+        displayTemp={displayTemp}
+        toF={toF}
+      />
 
       {recommendation ? (
         <section className="content-panel recommendation-panel">
@@ -116,16 +42,16 @@ export function HomeView({
             </div>
           </div>
 
-          <p className="panel-copy">
-            {getPhaseLabel(recommendation.phase, logs.length)}
-          </p>
-
           <div className="eff-temp-badge">
-            <span className="eff-temp-label">Effective temperature</span>
+            <span className="eff-temp-label">Feels like</span>
             <strong>
               {displayTemp(Math.round(recommendation.effectiveTemp))}
             </strong>
           </div>
+
+          <p className="panel-copy">
+            {getPhaseLabel(recommendation.phase, logs.length)}
+          </p>
 
           <OutfitLayers outfit={recommendation.outfit} />
 
@@ -134,6 +60,15 @@ export function HomeView({
           </button>
         </section>
       ) : null}
+
+      <ActivityDurationStrip
+        activity={activity}
+        duration={duration}
+        activityOptions={activityOptions}
+        durationOptions={durationOptions}
+        onActivityChange={onActivityChange}
+        onDurationChange={onDurationChange}
+      />
     </main>
   );
 }
