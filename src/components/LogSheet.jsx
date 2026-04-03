@@ -38,7 +38,7 @@ export function LogSheet({
   useEffect(() => {
     if (!show) return undefined;
 
-    const handleKeyDown = event => {
+    const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose();
     };
 
@@ -89,7 +89,8 @@ export function LogSheet({
     const sheet = sheetRef.current;
     const overlay = overlayRef.current;
     if (sheet) {
-      sheet.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      sheet.style.transition =
+        'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
       sheet.style.transform = 'translateY(0)';
     }
     if (overlay) {
@@ -98,7 +99,7 @@ export function LogSheet({
     }
   };
 
-  const handleDragStart = event => {
+  const handleDragStart = (event) => {
     const y = event.touches[0]?.clientY;
     dragStartY.current = y;
     lastY.current = y;
@@ -107,7 +108,7 @@ export function LogSheet({
     if (overlayRef.current) overlayRef.current.style.transition = 'none';
   };
 
-  const handleDragMove = event => {
+  const handleDragMove = (event) => {
     if (dragStartY.current == null) return;
     const y = event.touches[0]?.clientY;
     const deltaY = Math.max(0, y - dragStartY.current);
@@ -123,7 +124,7 @@ export function LogSheet({
     }
   };
 
-  const handleDragEnd = event => {
+  const handleDragEnd = (event) => {
     if (dragStartY.current == null) return;
     const endY = event.changedTouches[0]?.clientY;
     const deltaY = Math.max(0, endY - dragStartY.current);
@@ -142,7 +143,9 @@ export function LogSheet({
     <div
       ref={overlayRef}
       className="sheet-overlay"
-      onClick={e => { if (e.target === e.currentTarget) snapClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) snapClose();
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="sheet-title"
@@ -157,7 +160,9 @@ export function LogSheet({
           <div className="sheet-handle" aria-hidden="true" />
         </div>
         <div className="sheet-header">
-          <h2 id="sheet-title" className="sheet-title">How did it go?</h2>
+          <h2 id="sheet-title" className="sheet-title">
+            How did it go?
+          </h2>
         </div>
 
         <OptionSelector
@@ -177,7 +182,10 @@ export function LogSheet({
           compact
         />
 
-        <div className="selector-section" style={{ padding: 0, marginBottom: 24 }}>
+        <div
+          className="selector-section"
+          style={{ padding: 0, marginBottom: 24 }}
+        >
           <div className="selector-label">What You Wore (tap to adjust)</div>
           {logOutfit ? (
             <OutfitLayers
@@ -188,9 +196,11 @@ export function LogSheet({
           ) : null}
         </div>
 
-        <div className="selector-label" style={{ marginBottom: 12 }}>Comfort Rating</div>
+        <div className="selector-label" style={{ marginBottom: 12 }}>
+          Comfort Rating
+        </div>
         <div className="comfort-row">
-          {COMFORT_RATINGS.map(cr => (
+          {COMFORT_RATINGS.map((cr) => (
             <button
               key={cr.key}
               type="button"
@@ -198,12 +208,15 @@ export function LogSheet({
               style={{
                 color: logComfort === cr.key ? cr.color : undefined,
                 borderColor: logComfort === cr.key ? cr.color : undefined,
-                backgroundColor: logComfort === cr.key ? `${cr.color}15` : undefined
+                backgroundColor:
+                  logComfort === cr.key ? `${cr.color}15` : undefined,
               }}
               onClick={() => onComfortChange(cr.key)}
               aria-pressed={logComfort === cr.key}
             >
-              <span className="comfort-icon" aria-hidden="true">{cr.icon}</span>
+              <span className="comfort-icon" aria-hidden="true">
+                {cr.icon}
+              </span>
               <span className="comfort-label">{cr.label}</span>
             </button>
           ))}
@@ -213,7 +226,7 @@ export function LogSheet({
           <div className="zone-group">
             <div className="zone-group-label">❄️ Too cold anywhere?</div>
             <div className="zone-row">
-              {BODY_ZONES.map(z => (
+              {BODY_ZONES.map((z) => (
                 <button
                   key={z.key}
                   type="button"
@@ -230,7 +243,7 @@ export function LogSheet({
           <div className="zone-group">
             <div className="zone-group-label">🔥 Too warm anywhere?</div>
             <div className="zone-row">
-              {BODY_ZONES.map(z => (
+              {BODY_ZONES.map((z) => (
                 <button
                   key={z.key}
                   type="button"
@@ -251,7 +264,7 @@ export function LogSheet({
           placeholder="Notes (optional) — illness, unusual setting…"
           rows={3}
           value={logNotes}
-          onChange={e => onNotesChange(e.target.value)}
+          onChange={(e) => onNotesChange(e.target.value)}
           style={{ resize: 'none' }}
         />
 
@@ -260,7 +273,11 @@ export function LogSheet({
           className="sheet-submit log-btn"
           disabled={!logComfort}
           onClick={onSubmit}
-          style={{ width: '100%', margin: '20px 0 0 0', opacity: !logComfort ? 0.5 : 1 }}
+          style={{
+            width: '100%',
+            margin: '20px 0 0 0',
+            opacity: !logComfort ? 0.5 : 1,
+          }}
         >
           Save Log
         </button>

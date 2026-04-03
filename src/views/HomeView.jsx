@@ -37,10 +37,16 @@ export function HomeView({
               <span className="weather-temp-unit">°{unit}</span>
             </div>
             <div className="weather-status">
-              <div className="weather-status-icon" aria-hidden="true">{weatherIcon(weather.weatherCode)}</div>
+              <div className="weather-status-icon" aria-hidden="true">
+                {weatherIcon(weather.weatherCode)}
+              </div>
               <div>
-                <div className="weather-desc">{weatherDesc(weather.weatherCode)}</div>
-                <div className="weather-caption">Dress for how it feels, not just the headline temperature.</div>
+                <div className="weather-desc">
+                  {weatherDesc(weather.weatherCode)}
+                </div>
+                <div className="weather-caption">
+                  Dress for how it feels, not just the headline temperature.
+                </div>
               </div>
             </div>
           </div>
@@ -49,7 +55,9 @@ export function HomeView({
         <div className="weather-details">
           <div className="weather-detail">
             <div className="weather-detail-label">Feels Like</div>
-            <div className="weather-detail-val">{displayTemp(weather.feelsLike)}</div>
+            <div className="weather-detail-val">
+              {displayTemp(weather.feelsLike)}
+            </div>
           </div>
           <div className="weather-detail">
             <div className="weather-detail-label">Wind</div>
@@ -72,7 +80,9 @@ export function HomeView({
             <div className="section-kicker">Inputs</div>
             <h1 className="panel-title">Tune today&apos;s recommendation</h1>
           </div>
-          <p className="panel-copy">Set how hard you&apos;re moving and how long you&apos;ll be outside.</p>
+          <p className="panel-copy">
+            Set how hard you&apos;re moving and how long you&apos;ll be outside.
+          </p>
         </div>
 
         <OptionSelector
@@ -98,19 +108,27 @@ export function HomeView({
               <div className="section-kicker">Recommendation</div>
               <h2 className="panel-title">Today&apos;s layer plan</h2>
             </div>
-            <div className="rec-conf">{phase === 1 ? 'Baseline' : 'Adaptive'}</div>
+            <div className="rec-conf">
+              {phase === 1 ? 'Baseline' : 'Adaptive'}
+            </div>
           </div>
 
-          <p className="panel-copy">{getPhaseLabel(recommendation.phase, logs.length)}</p>
+          <p className="panel-copy">
+            {getPhaseLabel(recommendation.phase, logs.length)}
+          </p>
 
           <div className="eff-temp-badge">
             <span className="eff-temp-label">Effective temperature</span>
-            <strong>{displayTemp(Math.round(recommendation.effectiveTemp))}</strong>
+            <strong>
+              {displayTemp(Math.round(recommendation.effectiveTemp))}
+            </strong>
           </div>
 
           <OutfitLayers outfit={recommendation.outfit} />
 
-          <button className="log-btn" onClick={onOpenLog}>Log How It Went</button>
+          <button className="log-btn" onClick={onOpenLog}>
+            Log How It Went
+          </button>
         </section>
       ) : null}
     </main>
@@ -124,7 +142,9 @@ export function HomeErrorView({ error }) {
         <div className="section-kicker">Weather Unavailable</div>
         <h1 className="panel-title">LayerUp couldn&apos;t load conditions.</h1>
         <p className="panel-copy">{error}</p>
-        <button className="log-btn" onClick={() => window.location.reload()}>Retry</button>
+        <button className="log-btn" onClick={() => window.location.reload()}>
+          Retry
+        </button>
       </div>
     </main>
   );

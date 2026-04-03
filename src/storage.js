@@ -1,4 +1,8 @@
-import { isFirebaseEnabled, loadFirestoreState, saveFirestoreState } from './firebase';
+import {
+  isFirebaseEnabled,
+  loadFirestoreState,
+  saveFirestoreState,
+} from './firebase';
 
 const LOCAL_KEY = 'layerup_logs_v2';
 const LOCAL_UNIT_KEY = 'layerup_unit';
@@ -6,11 +10,16 @@ const LOCAL_THEME_KEY = 'layerup_theme';
 
 function safeParse(raw, fallback) {
   if (!raw) return fallback;
-  try { return JSON.parse(raw); } catch { return fallback; }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
 }
 
 export function loadLocalStorage() {
-  if (typeof window === 'undefined') return { logs: [], unit: 'C', theme: 'light' };
+  if (typeof window === 'undefined')
+    return { logs: [], unit: 'C', theme: 'light' };
   const logs = safeParse(localStorage.getItem(LOCAL_KEY), []);
   const unit = localStorage.getItem(LOCAL_UNIT_KEY) || 'C';
   const theme = localStorage.getItem(LOCAL_THEME_KEY) || 'light';

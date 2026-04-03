@@ -1,4 +1,9 @@
-import { ACTIVITY_LEVELS, DURATIONS, LAYERS, normalizeOutfit } from './constants';
+import {
+  ACTIVITY_LEVELS,
+  DURATIONS,
+  LAYERS,
+  normalizeOutfit,
+} from './constants';
 
 export function getPhase(logCount) {
   if (logCount >= 50) return 4;
@@ -9,22 +14,75 @@ export function getPhase(logCount) {
 
 export function getPhaseLabel(phase, logCount) {
   switch (phase) {
-    case 1: return 'Based on standard thermal conditions';
-    case 2: return `Calibrated to your warmth profile (${logCount} logs)`;
-    case 3: return `Tuned to your activity patterns (${logCount} logs)`;
-    case 4: return `Matched to similar days in your history`;
-    default: return '';
+    case 1:
+      return 'Based on standard thermal conditions';
+    case 2:
+      return `Calibrated to your warmth profile (${logCount} logs)`;
+    case 3:
+      return `Tuned to your activity patterns (${logCount} logs)`;
+    case 4:
+      return `Matched to similar days in your history`;
+    default:
+      return '';
   }
 }
 
 export function phase1Recommend(effectiveTemp, hasPrecip, hasSnow) {
   let outfit;
-  if (effectiveTemp > 25) outfit = { base: 0, mid: 0, outer: 0, bottom: 0, accessories: 0, footwear: 0 };
-  else if (effectiveTemp > 20) outfit = { base: 1, mid: 0, outer: 0, bottom: 1, accessories: 0, footwear: 1 };
-  else if (effectiveTemp > 15) outfit = { base: 1, mid: 1, outer: 0, bottom: 2, accessories: 0, footwear: 1 };
-  else if (effectiveTemp > 10) outfit = { base: 2, mid: 2, outer: 1, bottom: 2, accessories: 0, footwear: 2 };
-  else if (effectiveTemp > 5) outfit = { base: 2, mid: 3, outer: 2, bottom: 3, accessories: 1, footwear: 3 };
-  else outfit = { base: 3, mid: 3, outer: 4, bottom: 4, accessories: 5, footwear: 3 };
+  if (effectiveTemp > 25)
+    outfit = {
+      base: 0,
+      mid: 0,
+      outer: 0,
+      bottom: 0,
+      accessories: 0,
+      footwear: 0,
+    };
+  else if (effectiveTemp > 20)
+    outfit = {
+      base: 1,
+      mid: 0,
+      outer: 0,
+      bottom: 1,
+      accessories: 0,
+      footwear: 1,
+    };
+  else if (effectiveTemp > 15)
+    outfit = {
+      base: 1,
+      mid: 1,
+      outer: 0,
+      bottom: 2,
+      accessories: 0,
+      footwear: 1,
+    };
+  else if (effectiveTemp > 10)
+    outfit = {
+      base: 2,
+      mid: 2,
+      outer: 1,
+      bottom: 2,
+      accessories: 0,
+      footwear: 2,
+    };
+  else if (effectiveTemp > 5)
+    outfit = {
+      base: 2,
+      mid: 3,
+      outer: 2,
+      bottom: 3,
+      accessories: 1,
+      footwear: 3,
+    };
+  else
+    outfit = {
+      base: 3,
+      mid: 3,
+      outer: 4,
+      bottom: 4,
+      accessories: 5,
+      footwear: 3,
+    };
 
   if (hasSnow) {
     outfit.footwear = LAYERS.footwear.length - 1;
@@ -38,7 +96,13 @@ export function phase1Recommend(effectiveTemp, hasPrecip, hasSnow) {
 
 export function calculateOffset(logs) {
   if (!logs?.length) return 0;
-  const comfortMap = { tooCold: -2, cold: -1, justRight: 0, warm: 1, tooHot: 2 };
+  const comfortMap = {
+    tooCold: -2,
+    cold: -1,
+    justRight: 0,
+    warm: 1,
+    tooHot: 2,
+  };
   const total = logs.reduce((sum, l) => sum + (comfortMap[l.comfort] || 0), 0);
   return -(total / logs.length) * 1.5;
 }
@@ -46,7 +110,7 @@ export function calculateOffset(logs) {
 export function calculateActivityOffsets(logs) {
   const offsets = {};
   for (const act of ACTIVITY_LEVELS) {
-    const actLogs = logs.filter(l => l.activity === act.key);
+    const actLogs = logs.filter((l) => l.activity === act.key);
     if (actLogs.length >= 5) offsets[act.key] = calculateOffset(actLogs);
   }
   return offsets;
@@ -55,20 +119,22 @@ export function calculateActivityOffsets(logs) {
 function euclideanDist(a, b) {
   return Math.sqrt(
     ((a.feelsLike - b.feelsLike) / 10) ** 2 +
-    ((a.humidity - b.humidity) / 30) ** 2 +
-    ((a.windSpeed - b.windSpeed) / 10) ** 2
+      ((a.humidity - b.humidity) / 30) ** 2 +
+      ((a.windSpeed - b.windSpeed) / 10) ** 2
   );
 }
 
 export function phase4Recommend(weather, activity, duration, logs) {
-  const activityLogs = logs.filter(l => l.comfort === 'justRight' && l.activity === activity);
+  const activityLogs = logs.filter(
+    (l) => l.comfort === 'justRight' && l.activity === activity
+  );
   if (activityLogs.length < 3) return null;
 
-  const durationLogs = activityLogs.filter(l => l.duration === duration);
+  const durationLogs = activityLogs.filter((l) => l.duration === duration);
   const candidateLogs = durationLogs.length >= 3 ? durationLogs : activityLogs;
 
   const scored = candidateLogs
-    .map(l => ({ log: l, dist: euclideanDist(weather, l.weather) }))
+    .map((l) => ({ log: l, dist: euclideanDist(weather, l.weather) }))
     .sort((a, b) => a.dist - b.dist)
     .slice(0, 5);
 
@@ -78,14 +144,15 @@ export function phase4Recommend(weather, activity, duration, logs) {
 
 export function getRecommendation(weather, activity, duration, logs) {
   const phase = getPhase(logs.length);
-  const actMod = ACTIVITY_LEVELS.find(a => a.key === activity)?.modifier || 0;
-  const durationMod = DURATIONS.find(d => d.key === duration)?.modifier || 0;
+  const actMod = ACTIVITY_LEVELS.find((a) => a.key === activity)?.modifier || 0;
+  const durationMod = DURATIONS.find((d) => d.key === duration)?.modifier || 0;
   let effectiveTemp = weather.feelsLike + actMod + durationMod;
 
   if (phase >= 2) {
-    const offset = phase >= 3
-      ? (calculateActivityOffsets(logs)[activity] || calculateOffset(logs))
-      : calculateOffset(logs);
+    const offset =
+      phase >= 3
+        ? calculateActivityOffsets(logs)[activity] || calculateOffset(logs)
+        : calculateOffset(logs);
     effectiveTemp += offset;
   }
 

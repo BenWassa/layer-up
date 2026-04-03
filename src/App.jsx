@@ -48,13 +48,20 @@ export default function LayerUp() {
     async function init() {
       const saved = await loadAppState();
       if (cancelled) return;
-      setLogs((saved.logs || []).map(log => ({ ...log, outfit: normalizeOutfit(log.outfit) })));
+      setLogs(
+        (saved.logs || []).map((log) => ({
+          ...log,
+          outfit: normalizeOutfit(log.outfit),
+        }))
+      );
       setUnit(saved.unit || 'C');
       setTheme(saved.theme || 'light');
       setBootstrapped(true);
     }
     init();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -80,12 +87,18 @@ export default function LayerUp() {
       let ipCity = null;
 
       // Start both location methods in parallel
-      const ipGeoPromise = fetch('https://ipapi.co/json/').then(r => r.json()).catch(() => null);
+      const ipGeoPromise = fetch('https://ipapi.co/json/')
+        .then((r) => r.json())
+        .catch(() => null);
 
       const browserGeoPromise = navigator?.geolocation
         ? new Promise((resolve) => {
             navigator.geolocation.getCurrentPosition(
-              (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+              (pos) =>
+                resolve({
+                  lat: pos.coords.latitude,
+                  lng: pos.coords.longitude,
+                }),
               () => resolve(null),
               { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
             );
@@ -110,7 +123,9 @@ export default function LayerUp() {
           lng = ipData.longitude;
           ipCity = ipData.city || null;
         } else {
-          console.warn('Geolocation and IP geo both failed, using default location');
+          console.warn(
+            'Geolocation and IP geo both failed, using default location'
+          );
         }
       }
 
@@ -129,9 +144,11 @@ export default function LayerUp() {
           const geoData = await geoRes.json();
           if (geoData?.address) {
             const a = geoData.address;
-            const neighbourhood = a.neighbourhood || a.suburb || a.quarter || a.village || a.hamlet;
+            const neighbourhood =
+              a.neighbourhood || a.suburb || a.quarter || a.village || a.hamlet;
             const city = a.city || a.town || a.municipality;
-            if (neighbourhood && city) locationName = `${neighbourhood}, ${city}`;
+            if (neighbourhood && city)
+              locationName = `${neighbourhood}, ${city}`;
             else if (city) locationName = city;
             else if (neighbourhood) locationName = neighbourhood;
           }
@@ -152,26 +169,32 @@ export default function LayerUp() {
           });
           setLoadingWeather(false);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
-          setError('Could not fetch weather data. Please check network and retry.');
+          setError(
+            'Could not fetch weather data. Please check network and retry.'
+          );
           setLoadingWeather(false);
         }
       }
     }
 
     fetchWeather();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const toF = c => Math.round(c * 9 / 5 + 32);
-  const displayTemp = c => (unit === 'F' ? `${toF(c)}°F` : `${c}°C`);
-  const displayOffset = celsiusVal => {
+  const toF = (c) => Math.round((c * 9) / 5 + 32);
+  const displayTemp = (c) => (unit === 'F' ? `${toF(c)}°F` : `${c}°C`);
+  const displayOffset = (celsiusVal) => {
     const val = unit === 'F' ? celsiusVal * 1.8 : celsiusVal;
     return `${val > 0 ? '+' : ''}${val.toFixed(1)}°`;
   };
 
-  const recommendation = weather ? getRecommendation(weather, activity, duration, logs) : null;
+  const recommendation = weather
+    ? getRecommendation(weather, activity, duration, logs)
+    : null;
 
   const openLog = () => {
     if (recommendation) setLogOutfit(normalizeOutfit(recommendation.outfit));
@@ -198,15 +221,18 @@ export default function LayerUp() {
       hotZones: logHotZones,
       notes: logNotes,
     };
-    setLogs(prev => [...prev, entry]);
+    setLogs((prev) => [...prev, entry]);
     setShowLog(false);
   };
 
   const phase = getPhase(logs.length);
   const cycleLogLayer = (category, optionCount) => {
-    setLogOutfit(prev => {
+    setLogOutfit((prev) => {
       const normalized = normalizeOutfit(prev);
-      return { ...normalized, [category]: (normalized[category] + 1) % optionCount };
+      return {
+        ...normalized,
+        [category]: (normalized[category] + 1) % optionCount,
+      };
     });
   };
   const clearLogs = () => {
@@ -254,7 +280,9 @@ export default function LayerUp() {
 
       {tab === 'home' && error ? <HomeErrorView error={error} /> : null}
 
-      {tab === 'history' ? <HistoryView logs={logs} displayTemp={displayTemp} /> : null}
+      {tab === 'history' ? (
+        <HistoryView logs={logs} displayTemp={displayTemp} />
+      ) : null}
 
       {tab === 'insights' ? (
         <InsightsView
@@ -274,7 +302,9 @@ export default function LayerUp() {
           onUnitChange={setUnit}
           onThemeChange={setTheme}
           onActivityChange={setActivity}
-          onLoadDemoLogs={() => setLogs(prev => [...prev, ...generateDemoLogs(25)])}
+          onLoadDemoLogs={() =>
+            setLogs((prev) => [...prev, ...generateDemoLogs(25)])
+          }
           confirmClear={confirmClear}
           onClearLogs={clearLogs}
           appVersion={APP_VERSION}
@@ -295,9 +325,17 @@ export default function LayerUp() {
         logComfort={logComfort}
         onComfortChange={setLogComfort}
         logColdZones={logColdZones}
-        onColdZoneToggle={key => setLogColdZones(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])}
+        onColdZoneToggle={(key) =>
+          setLogColdZones((prev) =>
+            prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+          )
+        }
         logHotZones={logHotZones}
-        onHotZoneToggle={key => setLogHotZones(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])}
+        onHotZoneToggle={(key) =>
+          setLogHotZones((prev) =>
+            prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+          )
+        }
         logNotes={logNotes}
         onNotesChange={setLogNotes}
         onClose={() => setShowLog(false)}

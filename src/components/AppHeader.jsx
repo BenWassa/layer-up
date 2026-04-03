@@ -3,7 +3,9 @@ export function AppHeader({ phase, logCount, compact = false }) {
     <header className={`header ${compact ? 'header-compact' : ''}`}>
       <div className="brand-block">
         <div className="brand-kicker">Personal Climate Log</div>
-        <div className="logo">Layer<span>Up</span></div>
+        <div className="logo">
+          Layer<span>Up</span>
+        </div>
       </div>
       {phase ? (
         <div className="phase-pill">

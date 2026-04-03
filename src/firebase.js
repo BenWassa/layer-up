@@ -33,7 +33,9 @@ export function getFirebaseApp() {
   const config = getFirebaseConfig();
 
   if (!config.apiKey || !config.projectId || !config.appId) {
-    throw new Error('Firebase config env variables are missing (VITE_FIREBASE_*).');
+    throw new Error(
+      'Firebase config env variables are missing (VITE_FIREBASE_*).'
+    );
   }
 
   app = initializeApp(config);
@@ -60,7 +62,7 @@ export async function ensureAnonymousSession() {
   authReadyPromise = new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
       getFirebaseAuth(),
-      async user => {
+      async (user) => {
         if (user) {
           unsubscribe();
           resolve(user);
@@ -74,7 +76,7 @@ export async function ensureAnonymousSession() {
           reject(error);
         }
       },
-      error => {
+      (error) => {
         unsubscribe();
         reject(error);
       }

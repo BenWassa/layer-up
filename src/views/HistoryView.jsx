@@ -29,45 +29,67 @@ export function HistoryView({ logs, displayTemp }) {
       <section className="page-intro">
         <div className="section-kicker">Training Data</div>
         <h1 className="page-title">Your outing history</h1>
-        <p className="page-copy">Every log helps the model learn how your body reads the weather.</p>
+        <p className="page-copy">
+          Every log helps the model learn how your body reads the weather.
+        </p>
       </section>
 
       {logs.length === 0 ? (
         <section className="content-panel empty-state">
-          <div className="empty-symbol" aria-hidden="true">⌁</div>
+          <div className="empty-symbol" aria-hidden="true">
+            ⌁
+          </div>
           <h2 className="empty-title">No logs yet</h2>
-          <p className="empty-copy">After your next outing, record how the recommendation felt and this timeline will start filling in.</p>
+          <p className="empty-copy">
+            After your next outing, record how the recommendation felt and this
+            timeline will start filling in.
+          </p>
         </section>
       ) : null}
 
-      {[...logs].reverse().map(log => {
-        const comfort = COMFORT_RATINGS.find(item => item.key === log.comfort);
-        const activity = ACTIVITY_LEVELS.find(item => item.key === log.activity);
-        const duration = DURATIONS.find(item => item.key === log.duration);
+      {[...logs].reverse().map((log) => {
+        const comfort = COMFORT_RATINGS.find(
+          (item) => item.key === log.comfort
+        );
+        const activity = ACTIVITY_LEVELS.find(
+          (item) => item.key === log.activity
+        );
+        const duration = DURATIONS.find((item) => item.key === log.duration);
         const outfit = normalizeOutfit(log.outfit);
 
         return (
           <article key={log.id} className="history-item">
             <div className="history-top">
               <div>
-                <time className="history-date" dateTime={new Date(log.timestamp).toISOString()}>
+                <time
+                  className="history-date"
+                  dateTime={new Date(log.timestamp).toISOString()}
+                >
                   {formatDate(log.timestamp)}
                 </time>
                 <div className="history-location">{log.weather.location}</div>
               </div>
-              <div className="history-comfort" title={comfort?.label}>{comfort?.icon}</div>
+              <div className="history-comfort" title={comfort?.label}>
+                {comfort?.icon}
+              </div>
             </div>
 
             <div className="history-conditions">
-              <span>{weatherIcon(log.weather.weatherCode)} {displayTemp(log.weather.feelsLike)} feels like</span>
-              <span>{activity?.icon} {activity?.label}</span>
+              <span>
+                {weatherIcon(log.weather.weatherCode)}{' '}
+                {displayTemp(log.weather.feelsLike)} feels like
+              </span>
+              <span>
+                {activity?.icon} {activity?.label}
+              </span>
               <span>{duration?.label}</span>
             </div>
 
             <div className="history-outfit">
-              {OUTFIT_CATEGORIES.map(category => (
+              {OUTFIT_CATEGORIES.map((category) => (
                 <span key={category} className="history-tag">
-                  {LAYER_ICONS[category]} {LAYERS[category][outfit[category]] || LAYERS[category][0]}
+                  {LAYER_ICONS[category]}{' '}
+                  {LAYERS[category][outfit[category]] || LAYERS[category][0]}
                 </span>
               ))}
             </div>

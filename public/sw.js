@@ -3,7 +3,7 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/LayerUp.png'
+  '/LayerUp.png',
 ];
 
 // Install event: cache essential assets
