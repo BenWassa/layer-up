@@ -1,12 +1,13 @@
 # layer-up
-Weather and clothing 
+
+Weather and clothing
 
 ## Setup (local development)
 
 1. Install dependencies:
-	- `npm install`
+   - `npm install`
 2. Run dev server:
-	- `npm run dev`
+   - `npm run dev`
 3. Open `http://localhost:5173`
 
 ## Build
@@ -22,11 +23,13 @@ Weather and clothing
 **IMPORTANT**: Pushing to GitHub does NOT automatically create a production release.
 
 To deploy a new production version:
+
 ```bash
 npm run release
 ```
 
 For beta releases:
+
 ```bash
 npm run release:beta
 ```
@@ -57,13 +60,13 @@ It is intended to use only Firebase Hosting, Authentication, and Firestore. You 
 3. In Firestore Database, create the database in production mode.
 4. Deploy the included Firestore rules from this repo.
 5. Copy `.env.example` to `.env` and set:
-	- `VITE_FIREBASE_ENABLED=true`
-	- `VITE_FIREBASE_API_KEY`
-	- `VITE_FIREBASE_AUTH_DOMAIN`
-	- `VITE_FIREBASE_PROJECT_ID`
-	- `VITE_FIREBASE_STORAGE_BUCKET`
-	- `VITE_FIREBASE_MESSAGING_SENDER_ID`
-	- `VITE_FIREBASE_APP_ID`
+   - `VITE_FIREBASE_ENABLED=true`
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
 6. Restart `npm run dev`.
 
 Local state is always saved first. When Firebase is enabled, the app signs in anonymously and syncs your state to `users/{uid}/appState/current`.
@@ -72,13 +75,13 @@ If the Firebase console asks you to upgrade to Blaze while setting up Storage, s
 ## Firebase deployment
 
 1. Build the app:
-	- `npm run build`
+   - `npm run build`
 2. Log into Firebase CLI:
-	- `firebase login`
+   - `firebase login`
 3. Link the repo to your Firebase project:
-	- `firebase use --add`
+   - `firebase use --add`
 4. Deploy hosting and rules:
-	- `firebase deploy --only hosting,firestore`
+   - `firebase deploy --only hosting,firestore`
 
 ## GitHub Pages deployment
 

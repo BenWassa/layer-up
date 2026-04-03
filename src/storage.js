@@ -1,21 +1,32 @@
-import { isFirebaseEnabled, loadFirestoreState, saveFirestoreState } from './firebase';
+import {
+  isFirebaseEnabled,
+  loadFirestoreState,
+  saveFirestoreState,
+} from './firebase';
 
 const LOCAL_KEY = 'layerup_logs_v2';
 const LOCAL_UNIT_KEY = 'layerup_unit';
+const LOCAL_THEME_KEY = 'layerup_theme';
 
 function safeParse(raw, fallback) {
   if (!raw) return fallback;
-  try { return JSON.parse(raw); } catch { return fallback; }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
 }
 
 export function loadLocalStorage() {
-  if (typeof window === 'undefined') return { logs: [], unit: 'C' };
+  if (typeof window === 'undefined')
+    return { logs: [], unit: 'C', theme: 'light' };
   const logs = safeParse(localStorage.getItem(LOCAL_KEY), []);
   const unit = localStorage.getItem(LOCAL_UNIT_KEY) || 'C';
-  return { logs, unit };
+  const theme = localStorage.getItem(LOCAL_THEME_KEY) || 'light';
+  return { logs, unit, theme };
 }
 
-export function saveLocalStorage({ logs, unit }) {
+export function saveLocalStorage({ logs, unit, theme }) {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(logs || []));
@@ -27,6 +38,11 @@ export function saveLocalStorage({ logs, unit }) {
   } catch (e) {
     console.warn('Unable to save unit locally', e);
   }
+  try {
+    localStorage.setItem(LOCAL_THEME_KEY, theme || 'light');
+  } catch (e) {
+    console.warn('Unable to save theme locally', e);
+  }
 }
 
 export async function loadAppState() {
@@ -37,6 +53,7 @@ export async function loadAppState() {
       return {
         logs: remote.logs,
         unit: remote.unit || local.unit,
+        theme: remote.theme || local.theme,
       };
     }
   }

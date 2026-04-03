@@ -7,10 +7,13 @@ export function OptionSelector({
   compact = false,
 }) {
   return (
-    <div className="selector-section" style={compact ? { margin: '16px 0' } : undefined}>
+    <div
+      className="selector-section"
+      style={compact ? { margin: '16px 0' } : undefined}
+    >
       <div className="selector-label">{label}</div>
       <div className="selector-row">
-        {options.map(option => (
+        {options.map((option) => (
           <button
             key={option.key}
             className={`sel-btn ${selectedKey === option.key ? 'active' : ''}`}

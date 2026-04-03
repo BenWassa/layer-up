@@ -1,11 +1,17 @@
-import { LAYERS, LAYER_ICONS, LAYER_LABELS, OUTFIT_CATEGORIES, normalizeOutfit } from '../constants';
+import {
+  LAYERS,
+  LAYER_ICONS,
+  LAYER_LABELS,
+  OUTFIT_CATEGORIES,
+  normalizeOutfit,
+} from '../constants';
 
 export function OutfitLayers({ outfit, editable = false, onCycleLayer }) {
   const normalizedOutfit = normalizeOutfit(outfit);
 
   return (
     <div className="outfit-layers">
-      {OUTFIT_CATEGORIES.map(cat => {
+      {OUTFIT_CATEGORIES.map((cat) => {
         const idx = normalizedOutfit[cat];
         const options = LAYERS[cat];
         const maxIdx = options.length - 1;
@@ -14,8 +20,14 @@ export function OutfitLayers({ outfit, editable = false, onCycleLayer }) {
           <div
             key={cat}
             className="outfit-layer"
-            style={editable ? { cursor: 'pointer', touchAction: 'manipulation' } : undefined}
-            onClick={editable ? () => onCycleLayer(cat, options.length) : undefined}
+            style={
+              editable
+                ? { cursor: 'pointer', touchAction: 'manipulation' }
+                : undefined
+            }
+            onClick={
+              editable ? () => onCycleLayer(cat, options.length) : undefined
+            }
             role={editable ? 'button' : 'group'}
           >
             <div className="layer-icon">{LAYER_ICONS[cat]}</div>
