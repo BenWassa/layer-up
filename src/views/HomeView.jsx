@@ -31,7 +31,7 @@ export function HomeView({
               <h2 className="panel-title">Today&apos;s layer plan</h2>
             </div>
             <div className="rec-conf">
-              {phase === 1 ? 'Baseline' : 'Adaptive'}
+              {phase === 1 ? 'Learning' : 'Personalised'}
             </div>
           </div>
 
