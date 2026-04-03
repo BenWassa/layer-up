@@ -1,4 +1,4 @@
-import { weatherIcon, getTempColor } from '../constants';
+import { weatherIcon, getTempColor, formatPrecipitation } from '../constants';
 
 export function WeatherStrip({ weather, unit, displayTemp, toF }) {
   const displayedTemp =
@@ -13,6 +13,9 @@ export function WeatherStrip({ weather, unit, displayTemp, toF }) {
   }
   if (weather.humidity > 75) {
     badges.push({ key: 'humid', label: 'Humid', icon: '💧' });
+  }
+  if (weather.precipitation > 0) {
+    badges.push({ key: 'precip', label: `Rain: ${formatPrecipitation(weather.precipitation)}`, icon: '🌧️' });
   }
 
   return (

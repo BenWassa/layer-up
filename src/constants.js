@@ -141,6 +141,12 @@ export function getTempColor(feelsLike) {
   return `rgb(${lerp(from.r, to.r, s)}, ${lerp(from.g, to.g, s)}, ${lerp(from.b, to.b, s)})`;
 }
 
+export function formatPrecipitation(mm) {
+  if (mm < 1) return '<1 mm';
+  if (mm < 10) return `${mm} mm`;
+  return `${(mm / 10).toFixed(1)} cm`;
+}
+
 export function generateDemoLogs(count = 25) {
   const logs = [];
   const comforts = [
