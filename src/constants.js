@@ -126,6 +126,21 @@ export function weatherDesc(code) {
   return 'Overcast';
 }
 
+export const toC = (f) => Math.round(((f - 32) * 5) / 9);
+export const toF = (c) => Math.round((c * 9) / 5 + 32);
+
+export function getTempColor(feelsLike) {
+  const cold = { r: 75, g: 140, b: 201 };
+  const neutral = { r: 130, g: 130, b: 130 };
+  const warm = { r: 209, g: 126, b: 69 };
+  const t = Math.max(0, Math.min(1, (feelsLike + 2) / 27)); // 0 at ≤-2°C, 1 at ≥25°C
+  const lerp = (a, b, s) => Math.round(a + (b - a) * s);
+  let from, to, s;
+  if (t < 0.5) { from = cold; to = neutral; s = t * 2; }
+  else { from = neutral; to = warm; s = (t - 0.5) * 2; }
+  return `rgb(${lerp(from.r, to.r, s)}, ${lerp(from.g, to.g, s)}, ${lerp(from.b, to.b, s)})`;
+}
+
 export function generateDemoLogs(count = 25) {
   const logs = [];
   const comforts = [

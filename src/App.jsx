@@ -4,6 +4,7 @@ import {
   DURATIONS,
   generateDemoLogs,
   normalizeOutfit,
+  toF,
 } from './constants';
 import {
   getRecommendation,
@@ -185,7 +186,6 @@ export default function LayerUp() {
     };
   }, []);
 
-  const toF = (c) => Math.round((c * 9) / 5 + 32);
   const displayTemp = (c) => (unit === 'F' ? `${toF(c)}°F` : `${c}°C`);
   const displayOffset = (celsiusVal) => {
     const val = unit === 'F' ? celsiusVal * 1.8 : celsiusVal;

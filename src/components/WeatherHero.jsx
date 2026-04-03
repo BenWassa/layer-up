@@ -1,24 +1,4 @@
-import { LAYERS, OUTFIT_CATEGORIES, normalizeOutfit, weatherDesc } from '../constants';
-
-function getTempColor(feelsLike) {
-  const cold = { r: 75, g: 140, b: 201 };
-  const neutral = { r: 130, g: 130, b: 130 };
-  const warm = { r: 209, g: 126, b: 69 };
-  const t = Math.max(0, Math.min(1, (feelsLike + 2) / 27));
-  let r, g, b;
-  if (t < 0.5) {
-    const s = t * 2;
-    r = Math.round(cold.r + (neutral.r - cold.r) * s);
-    g = Math.round(cold.g + (neutral.g - cold.g) * s);
-    b = Math.round(cold.b + (neutral.b - cold.b) * s);
-  } else {
-    const s = (t - 0.5) * 2;
-    r = Math.round(neutral.r + (warm.r - neutral.r) * s);
-    g = Math.round(neutral.g + (warm.g - neutral.g) * s);
-    b = Math.round(neutral.b + (warm.b - neutral.b) * s);
-  }
-  return `rgb(${r}, ${g}, ${b})`;
-}
+import { LAYERS, OUTFIT_CATEGORIES, normalizeOutfit, weatherDesc, getTempColor, toF } from '../constants';
 
 // Returns two rgba color stops for the atmospheric page gradient.
 // Applied at low opacity so they tint rather than replace the existing bg.
@@ -46,12 +26,8 @@ export function getWeatherColors(code, feelsLike) {
 // Left-column weather content — no card wrapper.
 export function WeatherInfo({ weather, unit }) {
   const tempColor = getTempColor(weather.feelsLike);
-  const displayedTemp = unit === 'F'
-    ? Math.round((weather.temp * 9) / 5 + 32)
-    : weather.temp;
-  const displayedFeelsLike = unit === 'F'
-    ? Math.round((weather.feelsLike * 9) / 5 + 32)
-    : weather.feelsLike;
+  const displayedTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
+  const displayedFeelsLike = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
 
   const badges = [];
   if (weather.windSpeed > 40) badges.push({ key: 'wind', label: 'Strong wind', icon: '💨' });
