@@ -354,6 +354,7 @@ textarea {
 }
 
 :root[data-theme='dark'] .weather-status-icon,
+:root[data-theme='dark'] .layer-icon,
 :root[data-theme='dark'] .weather-detail,
 :root[data-theme='dark'] .stat-card,
 :root[data-theme='dark'] .history-tag,
