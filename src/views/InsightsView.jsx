@@ -2,39 +2,70 @@ import { ACTIVITY_LEVELS, COMFORT_RATINGS } from '../constants';
 import { AppHeader } from '../components/AppHeader';
 
 export function InsightsView({ logs, phase, calculateOffset, displayOffset }) {
+  const overallOffset = calculateOffset(logs);
+  const comfortRate = logs.length
+    ? Math.round((logs.filter(log => log.comfort === 'justRight').length / logs.length) * 100)
+    : 0;
+  const thermalProfile = overallOffset > 0 ? 'Runs Cold' : overallOffset < 0 ? 'Runs Warm' : 'Neutral';
+  const thermalSymbol = overallOffset > 0 ? '❄️' : overallOffset < 0 ? '🔥' : '◌';
+
   return (
-    <main className="insights-page">
+    <main className="page insights-page">
       <AppHeader compact />
-      <h1 className="insights-title">Insights</h1>
-      
+
+      <section className="page-intro">
+        <div className="section-kicker">Signals</div>
+        <h1 className="page-title">Thermal insights</h1>
+        <p className="page-copy">This is the app&apos;s current read on how your comfort shifts with weather and effort.</p>
+      </section>
+
       {logs.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text3)' }}>
-          <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>📊</div>
-          <p style={{ fontSize: 16, fontWeight: 500 }}>Not enough data.</p>
-          <p style={{ fontSize: 14, marginTop: 8 }}>Log some outings to see your personal thermal insights.</p>
-        </div>
+        <section className="content-panel empty-state">
+          <div className="empty-symbol" aria-hidden="true">◔</div>
+          <h2 className="empty-title">Not enough data yet</h2>
+          <p className="empty-copy">Add a few real-world logs to unlock your comfort patterns and activity offsets.</p>
+        </section>
       ) : (
         <>
           <section className="stat-grid">
-            <div className="stat-card"><div className="stat-val">{logs.length}</div><div className="stat-label">Total Logs</div></div>
-            <div className="stat-card"><div className="stat-val" style={{ color: 'var(--green)' }}>{Math.round((logs.filter(l => l.comfort === 'justRight').length / logs.length) * 100)}%</div><div className="stat-label">Just Right</div></div>
-            <div className="stat-card"><div className="stat-val">{calculateOffset(logs) > 0 ? '❄️' : calculateOffset(logs) < 0 ? '🔥' : '⚖️'}</div><div className="stat-label">{calculateOffset(logs) > 0 ? 'Runs Cold' : calculateOffset(logs) < 0 ? 'Runs Warm' : 'Neutral'}</div></div>
-            <div className="stat-card"><div className="stat-val">{phase}</div><div className="stat-label">Algorithm Phase</div></div>
+            <div className="stat-card">
+              <div className="stat-label">Total Logs</div>
+              <div className="stat-val">{logs.length}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Comfort Rate</div>
+              <div className="stat-val stat-val-good">{comfortRate}%</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Thermal Bias</div>
+              <div className="stat-val">{thermalSymbol}</div>
+              <div className="stat-meta">{thermalProfile}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Model Phase</div>
+              <div className="stat-val">{phase}</div>
+            </div>
           </section>
 
-          <section className="insight-section">
-            <h2 className="insight-section-title">Comfort Distribution</h2>
+          <section className="content-panel insight-section">
+            <div className="panel-heading">
+              <div>
+                <div className="section-kicker">Distribution</div>
+                <h2 className="panel-title">Comfort outcomes</h2>
+              </div>
+            </div>
+
             <div className="bar-chart">
-              {COMFORT_RATINGS.map(cr => {
-                const count = logs.filter(l => l.comfort === cr.key).length;
-                const pct = Math.round((count / logs.length) * 100) || 0;
+              {COMFORT_RATINGS.map((rating) => {
+                const count = logs.filter(log => log.comfort === rating.key).length;
+                const percent = Math.round((count / logs.length) * 100) || 0;
+
                 return (
-                  <div key={cr.key} className="bar-row">
-                    <div className="bar-label">{cr.icon} {cr.label}</div>
+                  <div key={rating.key} className="bar-row">
+                    <div className="bar-label">{rating.icon} {rating.label}</div>
                     <div className="bar-track">
-                      {/* Set a min-width of 8% so the pill shape doesn't collapse on small values */}
-                      <div className="bar-fill" style={{ width: `${Math.max(pct, 8)}%`, background: cr.color }}>
-                        {pct > 12 ? `${pct}%` : ''}
+                      <div className="bar-fill" style={{ width: `${Math.max(percent, 8)}%`, background: rating.color }}>
+                        {percent > 12 ? `${percent}%` : ''}
                       </div>
                     </div>
                   </div>
@@ -43,22 +74,27 @@ export function InsightsView({ logs, phase, calculateOffset, displayOffset }) {
             </div>
           </section>
 
-          <section className="insight-section">
-            <h2 className="insight-section-title">Warmth Offset by Activity</h2>
+          <section className="content-panel insight-section">
+            <div className="panel-heading">
+              <div>
+                <div className="section-kicker">Calibration</div>
+                <h2 className="panel-title">Warmth offset by activity</h2>
+              </div>
+            </div>
+
             <div className="bar-chart">
-              {ACTIVITY_LEVELS.map(a => {
-                const actLogs = logs.filter(l => l.activity === a.key);
-                const offset = actLogs.length >= 3 ? calculateOffset(actLogs) : 0;
+              {ACTIVITY_LEVELS.map((activity) => {
+                const activityLogs = logs.filter(log => log.activity === activity.key);
+                const offset = activityLogs.length >= 3 ? calculateOffset(activityLogs) : 0;
                 const normalized = Math.min(Math.max((offset + 5) / 10, 0), 1);
+                const color = offset > 0 ? 'var(--cold)' : offset < 0 ? 'var(--warm)' : 'var(--green)';
+
                 return (
-                  <div key={a.key} className="bar-row">
-                    <div className="bar-label">{a.icon} {a.label}</div>
+                  <div key={activity.key} className="bar-row">
+                    <div className="bar-label">{activity.icon} {activity.label}</div>
                     <div className="bar-track">
-                      <div className="bar-fill" style={{ 
-                        width: `${Math.max(normalized * 100, 10)}%`, 
-                        background: offset > 0 ? 'var(--cold)' : offset < 0 ? 'var(--warm)' : 'var(--green)' 
-                      }}>
-                        {actLogs.length >= 3 ? displayOffset(offset) : '—'}
+                      <div className="bar-fill" style={{ width: `${Math.max(normalized * 100, 10)}%`, background: color }}>
+                        {activityLogs.length >= 3 ? displayOffset(offset) : '—'}
                       </div>
                     </div>
                   </div>
@@ -67,24 +103,21 @@ export function InsightsView({ logs, phase, calculateOffset, displayOffset }) {
             </div>
           </section>
 
-          <section className="insight-section">
-            <h2 className="insight-section-title">Phase Progression</h2>
-            <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
-              {[1, 2, 3, 4].map(p => (
-                <div key={p} style={{ 
-                  flex: 1, 
-                  padding: '16px 4px', 
-                  borderRadius: 16, 
-                  background: phase >= p ? 'var(--accent-bg)' : 'var(--surface2)', 
-                  border: `1px solid ${phase >= p ? 'var(--accent)' : 'var(--border)'}`, 
-                  textAlign: 'center', 
-                  opacity: phase >= p ? 1 : 0.5, 
-                  transition: 'all 0.3s ease',
-                  boxShadow: phase === p ? '0 4px 12px var(--accent-glow)' : 'none'
-                }}>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: phase >= p ? 'var(--accent)' : 'var(--text2)' }}>{p}</div>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: phase >= p ? 'var(--text)' : 'var(--text3)', marginTop: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    {p === 1 ? 'Base' : p === 2 ? '10 logs' : p === 3 ? '30 logs' : '50 logs'}
+          <section className="content-panel insight-section">
+            <div className="panel-heading">
+              <div>
+                <div className="section-kicker">Progression</div>
+                <h2 className="panel-title">Algorithm maturity</h2>
+              </div>
+              <p className="panel-copy">Phase 4 only unlocks once LayerUp can match current conditions against similar successful days.</p>
+            </div>
+
+            <div className="phase-grid">
+              {[1, 2, 3, 4].map((value) => (
+                <div key={value} className={`phase-step ${phase >= value ? 'active' : ''} ${phase === value ? 'current' : ''}`}>
+                  <div className="phase-step-num">{value}</div>
+                  <div className="phase-step-label">
+                    {value === 1 ? 'Base' : value === 2 ? '10 logs' : value === 3 ? '30 logs' : '50 logs'}
                   </div>
                 </div>
               ))}
