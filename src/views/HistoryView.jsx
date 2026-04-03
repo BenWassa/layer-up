@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   ACTIVITY_LEVELS,
   COMFORT_RATINGS,
@@ -11,6 +12,11 @@ import {
 import { AppHeader } from '../components/AppHeader';
 
 export function HistoryView({ logs, displayTemp }) {
+  const normalizedLogs = useMemo(
+    () => logs.map((log) => ({ ...log, outfit: normalizeOutfit(log.outfit) })),
+    [logs]
+  );
+
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return new Intl.DateTimeFormat('en-US', {
@@ -47,7 +53,7 @@ export function HistoryView({ logs, displayTemp }) {
         </section>
       ) : null}
 
-      {[...logs].reverse().map((log) => {
+      {[...normalizedLogs].reverse().map((log) => {
         const comfort = COMFORT_RATINGS.find(
           (item) => item.key === log.comfort
         );
@@ -55,7 +61,7 @@ export function HistoryView({ logs, displayTemp }) {
           (item) => item.key === log.activity
         );
         const duration = DURATIONS.find((item) => item.key === log.duration);
-        const outfit = normalizeOutfit(log.outfit);
+        const { outfit } = log;
 
         return (
           <article key={log.id} className="history-item">

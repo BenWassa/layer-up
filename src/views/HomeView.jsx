@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { AppHeader } from '../components/AppHeader';
 import { WeatherInfo, LayerPlan, getWeatherColors } from '../components/WeatherHero';
 
@@ -10,7 +11,10 @@ export function HomeView({
   onOpenLog,
   getPhaseLabel,
 }) {
-  const wxColors = getWeatherColors(weather.weatherCode, weather.feelsLike);
+  const wxColors = useMemo(
+    () => getWeatherColors(weather.weatherCode, weather.feelsLike),
+    [weather.weatherCode, weather.feelsLike]
+  );
 
   return (
     <main

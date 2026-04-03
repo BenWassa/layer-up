@@ -31,6 +31,7 @@ export function LogSheet({
 }) {
   const overlayRef = useRef(null);
   const sheetRef = useRef(null);
+  const returnFocusRef = useRef(null);
   const dragStartY = useRef(null);
   const lastY = useRef(null);
   const lastTime = useRef(null);
@@ -38,12 +39,18 @@ export function LogSheet({
   useEffect(() => {
     if (!show) return undefined;
 
+    returnFocusRef.current = document.activeElement;
+    sheetRef.current?.focus();
+
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose();
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      returnFocusRef.current?.focus();
+    };
   }, [show, onClose]);
 
   useEffect(() => {
@@ -90,7 +97,7 @@ export function LogSheet({
     const overlay = overlayRef.current;
     if (sheet) {
       sheet.style.transition =
-        'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       sheet.style.transform = 'translateY(0)';
     }
     if (overlay) {
@@ -150,7 +157,7 @@ export function LogSheet({
       aria-modal="true"
       aria-labelledby="sheet-title"
     >
-      <div ref={sheetRef} className="sheet">
+      <div ref={sheetRef} className="sheet" tabIndex={-1}>
         <div
           className="sheet-grab"
           onTouchStart={handleDragStart}

@@ -28,7 +28,23 @@ export function OutfitLayers({ outfit, editable = false, onCycleLayer }) {
             onClick={
               editable ? () => onCycleLayer(cat, options.length) : undefined
             }
+            onKeyDown={
+              editable
+                ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onCycleLayer(cat, options.length);
+                    }
+                  }
+                : undefined
+            }
             role={editable ? 'button' : 'group'}
+            aria-label={
+              editable
+                ? `${LAYER_LABELS[cat]}: ${options[idx] || options[0]}. Press to cycle.`
+                : LAYER_LABELS[cat]
+            }
+            tabIndex={editable ? 0 : undefined}
           >
             <div className="layer-icon">{LAYER_ICONS[cat]}</div>
             <div className="layer-info">
