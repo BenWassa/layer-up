@@ -1,21 +1,13 @@
 import { AppHeader } from '../components/AppHeader';
 import { OutfitLayers } from '../components/OutfitLayers';
 import { WeatherStrip } from '../components/WeatherStrip';
-import { ActivityDurationStrip } from '../components/ActivityDurationStrip';
-
 export function HomeView({
   weather,
   unit,
   phase,
   logs,
-  activity,
-  duration,
-  activityOptions,
-  durationOptions,
   recommendation,
   displayTemp,
-  onActivityChange,
-  onDurationChange,
   onOpenLog,
   getPhaseLabel,
   toF,
@@ -31,6 +23,7 @@ export function HomeView({
         toF={toF}
       />
 
+      {/* Output Panel follows the inputs */}
       {recommendation ? (
         <section className="content-panel recommendation-panel">
           <div className="panel-heading">
@@ -60,20 +53,12 @@ export function HomeView({
           </button>
         </section>
       ) : null}
-
-      <ActivityDurationStrip
-        activity={activity}
-        duration={duration}
-        activityOptions={activityOptions}
-        durationOptions={durationOptions}
-        onActivityChange={onActivityChange}
-        onDurationChange={onDurationChange}
-      />
     </main>
   );
 }
 
 export function HomeErrorView({ error }) {
+  // ... (keep as is)
   return (
     <main className="page home-page">
       <div className="content-panel error-panel">

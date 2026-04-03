@@ -431,6 +431,32 @@ textarea {
   font-weight: 600;
 }
 
+.context-group {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Tighten the weather strip padding since it's now grouped */
+.context-group .weather-strip {
+  padding: 2px 2px 4px; 
+}
+
+/* Upgrade the activity/duration strip into a clickable card component */
+.context-group .acd-strip {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.context-group .acd-strip:active {
+  transform: scale(0.98);
+}
+
 /* Activity/duration strip */
 .acd-strip {
   padding: 14px 18px;
