@@ -22,32 +22,31 @@ Weather and clothing
 
 **IMPORTANT**: Pushing to GitHub does NOT automatically create a production release.
 
-To deploy a new production version:
-
-```bash
-npm run release
-```
-
-For beta releases:
+To deploy a new beta version:
 
 ```bash
 npm run release:beta
 ```
 
-These commands build the app and deploy to Firebase Hosting + Firestore config in one step.
+For production releases, update the version in `package.json` and then run:
+
+```bash
+npm run build && npm run deploy
+```
+
+These commands build the app and deploy to Firebase Hosting + Firestore config.
 
 ---
 
 ## Versioning
 
 This project uses semver in `package.json`.
-The current test release is `1.0.0-beta.1`.
+The current test release is `1.1.0-beta.0`.
 
 Useful commands:
 
 - `npm run build` to verify a release candidate locally
 - `npm run deploy` to deploy the current build to Firebase Hosting + Firestore config
-- `npm run release` to build and deploy the current production release in one step
 - `npm run release:beta` to build and deploy the current beta in one step
 
 ## Firebase optional sync (free tier)

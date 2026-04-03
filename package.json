@@ -12,6 +12,7 @@
     "format:check": "prettier . --check",
     "preview": "vite preview",
     "deploy": "firebase deploy --only hosting,firestore",
+    "release": "npm run build && firebase deploy --only hosting,firestore",
     "release:beta": "npm run build && firebase deploy --only hosting,firestore"
   },
   "dependencies": {

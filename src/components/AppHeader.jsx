@@ -9,7 +9,8 @@ export function AppHeader({ phase, logCount, compact = false }) {
       {phase ? (
         <div className="phase-pill">
           <span className="phase-pill-label">Phase {phase}</span>
-          <span>{logCount} logs trained</span>
+          <span className="phase-pill-sep">·</span>
+          <span>{logCount} logs</span>
         </div>
       ) : null}
     </header>

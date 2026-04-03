@@ -171,7 +171,7 @@ textarea {
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   margin-bottom: 18px;
 }
@@ -206,21 +206,26 @@ textarea {
 }
 
 .phase-pill {
-  display: grid;
-  gap: 4px;
-  min-width: 108px;
-  padding: 12px 14px;
-  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
   background: rgba(255, 251, 245, 0.64);
   border: 1px solid var(--line);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-soft);
+  white-space: nowrap;
 }
 
 .phase-pill-label {
   font-weight: 700;
   color: var(--text);
+}
+
+.phase-pill-sep {
+  color: var(--line-strong);
 }
 
 .page-intro {
@@ -258,11 +263,10 @@ textarea {
 }
 
 
-/* Home page — full-viewport layout with atmospheric weather tint */
+/* Home page — atmospheric weather tint */
 .home-page {
   display: flex;
   flex-direction: column;
-  min-height: calc(100dvh - env(safe-area-inset-bottom, 0px) - 116px);
 }
 
 /* Weather atmosphere: two radial blobs tinting the page background.
@@ -279,22 +283,21 @@ textarea {
     radial-gradient(ellipse at 12% 92%, var(--wx-b, transparent) 0%, transparent 52%);
 }
 
-/* Home body — fills remaining height, two-column, vertically centred */
+/* Home body — stacked layout, weather on top, plan below */
 .home-body {
   position: relative;
   z-index: 1;
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  align-items: center;
-  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 8px;
 }
 
 /* Left — weather info */
 .home-weather {
   display: grid;
   gap: 0;
+  padding-bottom: 4px;
 }
 
 .home-location {
@@ -321,7 +324,7 @@ textarea {
 
 .home-temp {
   font-family: 'Instrument Serif', serif;
-  font-size: 4rem;
+  font-size: 5rem;
   line-height: 0.88;
   letter-spacing: -0.04em;
 }
@@ -366,11 +369,11 @@ textarea {
   background: rgba(255, 255, 255, 0.12);
 }
 
-/* Right — layer plan as a light frosted card */
+/* Layer plan — full-width frosted card */
 .home-plan {
   display: grid;
   gap: 0;
-  padding: 16px;
+  padding: 18px 20px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: var(--panel);
@@ -385,7 +388,7 @@ textarea {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-faint);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .home-plan-layers {
@@ -394,10 +397,10 @@ textarea {
 
 .home-plan-row {
   display: grid;
-  grid-template-columns: 18px 34px 1fr;
+  grid-template-columns: 20px 44px 1fr;
   align-items: center;
-  gap: 5px;
-  padding: 10px 0;
+  gap: 8px;
+  padding: 11px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -687,7 +690,7 @@ textarea {
 
 .outfit-layers {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .outfit-layer {
@@ -695,7 +698,7 @@ textarea {
   grid-template-columns: 48px minmax(0, 1fr) 64px;
   align-items: center;
   gap: 12px;
-  padding: 16px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -714,17 +717,25 @@ textarea {
   font-size: 1.4rem;
 }
 
+.layer-info {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
 .layer-cat {
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
   color: var(--text-faint);
+  line-height: 1.1;
 }
 
 .layer-val {
-  margin-top: 4px;
-  font-size: 1rem;
+  margin-top: 0;
+  font-size: 0.98rem;
   font-weight: 600;
+  line-height: 1.25;
 }
 
 .layer-warmth-wrap {
@@ -814,14 +825,21 @@ textarea {
 .history-outfit {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .history-conditions span,
 .history-tag {
   padding: 8px 11px;
   font-size: 0.92rem;
+}
+
+.history-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.2;
 }
 
 .history-notes {
