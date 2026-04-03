@@ -302,16 +302,11 @@ textarea {
   gap: clamp(24px, 5vw, 34px);
 }
 
-.home-supporting {
-  display: grid;
-  gap: clamp(18px, 4vw, 24px);
-}
-
 /* Left — weather info */
 .home-weather {
   display: grid;
   gap: 0;
-  padding: 2px 2px 0;
+  padding: 0 0 18px;
 }
 
 .home-location {

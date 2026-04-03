@@ -264,17 +264,9 @@ export default function LayerUp() {
           unit={unit}
           phase={phase}
           logs={logs}
-          activity={activity}
-          duration={duration}
-          activityOptions={ACTIVITY_LEVELS}
-          durationOptions={DURATIONS}
           recommendation={recommendation}
-          displayTemp={displayTemp}
-          onActivityChange={setActivity}
-          onDurationChange={setDuration}
           onOpenLog={openLog}
           getPhaseLabel={getPhaseLabel}
-          toF={toF}
         />
       ) : null}
 

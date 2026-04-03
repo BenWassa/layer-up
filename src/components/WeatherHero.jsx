@@ -23,8 +23,8 @@ export function getWeatherColors(code, feelsLike) {
   return { a: 'rgba(28, 78, 172, 0.28)', b: 'rgba(68, 118, 198, 0.16)' };
 }
 
-// Left-column weather content — no card wrapper.
-export function WeatherInfo({ weather, unit }) {
+// Main weather readout beneath the compact strip.
+export function WeatherHero({ weather, unit }) {
   const tempColor = getTempColor(weather.feelsLike);
   const displayedTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
   const displayedFeelsLike = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
@@ -47,7 +47,7 @@ export function WeatherInfo({ weather, unit }) {
           {displayedTemp}°{unit}
         </span>
         <span className="home-feels" style={{ color: tempColor }}>
-          feels {displayedFeelsLike}°
+          feels like {displayedFeelsLike}°
         </span>
       </div>
 
@@ -187,7 +187,14 @@ function GeminiMannequin() {
 }
 
 // Right-column layer plan — compact frosted card.
-export function LayerPlan({ recommendation, logs, getPhaseLabel, onOpenLog }) {
+export function LayerPlan({
+  weather,
+  unit,
+  recommendation,
+  logs,
+  getPhaseLabel,
+  onOpenLog,
+}) {
   const normalized = normalizeOutfit(recommendation.outfit);
   const rows = OUTFIT_CATEGORIES
     .map((cat) => ({ cat, val: LAYERS[cat][normalized[cat]] }))
@@ -198,6 +205,8 @@ export function LayerPlan({ recommendation, logs, getPhaseLabel, onOpenLog }) {
       <div className="home-plan-label">
         {getPhaseLabel(recommendation.phase, logs.length)}
       </div>
+
+      <WeatherHero weather={weather} unit={unit} />
 
       <div className="home-plan-body">
         <div className="home-plan-figure" aria-hidden="true">

@@ -1,21 +1,14 @@
 import { useMemo } from 'react';
 import { AppHeader } from '../components/AppHeader';
-import { WeatherInfo, LayerPlan, getWeatherColors } from '../components/WeatherHero';
-import { ActivityDurationStrip } from '../components/ActivityDurationStrip';
+import { LayerPlan, getWeatherColors } from '../components/WeatherHero';
 
 export function HomeView({
   weather,
   unit,
   phase,
   logs,
-  activity,
-  duration,
-  activityOptions,
-  durationOptions,
   recommendation,
   onOpenLog,
-  onActivityChange,
-  onDurationChange,
   getPhaseLabel,
 }) {
   const wxColors = useMemo(
@@ -34,24 +27,14 @@ export function HomeView({
         <section className="home-landing">
           {recommendation ? (
             <LayerPlan
+              weather={weather}
+              unit={unit}
               recommendation={recommendation}
               logs={logs}
               getPhaseLabel={getPhaseLabel}
               onOpenLog={onOpenLog}
             />
           ) : null}
-
-          <div className="home-supporting">
-            <WeatherInfo weather={weather} unit={unit} />
-            <ActivityDurationStrip
-              activity={activity}
-              duration={duration}
-              activityOptions={activityOptions}
-              durationOptions={durationOptions}
-              onActivityChange={onActivityChange}
-              onDurationChange={onDurationChange}
-            />
-          </div>
         </section>
       </div>
     </main>
