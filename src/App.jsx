@@ -266,7 +266,6 @@ export default function LayerUp() {
           logs={logs}
           recommendation={recommendation}
           onOpenLog={openLog}
-          getPhaseLabel={getPhaseLabel}
         />
       ) : null}
 

@@ -37,12 +37,35 @@ function formatPrecipitationValue(value) {
   return `${value.toFixed(1)} mm`;
 }
 
+function getPrecipitationLabel(code) {
+  const desc = weatherDesc(code);
+  if (
+    desc === 'Drizzle' ||
+    desc === 'Freezing drizzle' ||
+    desc === 'Rain' ||
+    desc === 'Freezing rain' ||
+    desc === 'Snowfall' ||
+    desc === 'Snow grains' ||
+    desc === 'Rain showers' ||
+    desc === 'Snow showers' ||
+    desc === 'Thunderstorm'
+  ) {
+    return desc;
+  }
+  return 'Precipitation';
+}
+
 // Main weather readout above the outfit plan.
 export function WeatherHero({ weather, unit }) {
   const tempColor = getTempColor(weather.feelsLike);
-  const displayedTemp = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
+  const displayedTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
   const displayedFeelsLike = unit === 'F' ? toF(weather.feelsLike) : weather.feelsLike;
-  const displayedActualTemp = unit === 'F' ? toF(weather.temp) : weather.temp;
+  const finalMetricLabel =
+    weather.precipitation > 0 ? getPrecipitationLabel(weather.weatherCode) : 'Wind';
+  const finalMetricValue =
+    weather.precipitation > 0
+      ? formatPrecipitationValue(weather.precipitation)
+      : `${weather.windSpeed} km/h`;
 
   return (
     <div className="home-weather">
@@ -58,8 +81,7 @@ export function WeatherHero({ weather, unit }) {
               {displayedTemp}°{unit}
             </span>
             <span className="home-feels" style={{ color: tempColor }}>
-              feels like {displayedFeelsLike}° • actual {displayedActualTemp}°
-              {unit}
+              feels like {displayedFeelsLike}°{unit}
             </span>
           </div>
         </div>
@@ -78,10 +100,8 @@ export function WeatherHero({ weather, unit }) {
         </div>
 
         <div className="weather-cell weather-cell-metric">
-          <div className="weather-cell-kicker">Precip</div>
-          <div className="weather-metric-value">
-            {formatPrecipitationValue(weather.precipitation)}
-          </div>
+          <div className="weather-cell-kicker">{finalMetricLabel}</div>
+          <div className="weather-metric-value">{finalMetricValue}</div>
         </div>
       </div>
     </div>
@@ -207,11 +227,7 @@ function GeminiMannequin() {
 
 // Right-column layer plan — compact frosted card.
 export function LayerPlan({
-  weather,
-  unit,
   recommendation,
-  logs,
-  getPhaseLabel,
   onOpenLog,
 }) {
   const normalized = normalizeOutfit(recommendation.outfit);
@@ -221,12 +237,6 @@ export function LayerPlan({
 
   return (
     <div className="home-plan">
-      <div className="home-plan-label">
-        {getPhaseLabel(recommendation.phase, logs.length)}
-      </div>
-
-      <WeatherHero weather={weather} unit={unit} />
-
       <div className="home-plan-body">
         <div className="home-plan-figure" aria-hidden="true">
           <GeminiMannequin />
