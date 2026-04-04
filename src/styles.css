@@ -61,6 +61,7 @@ html {
       transparent 28%
     ),
     linear-gradient(180deg, #f4eee3 0%, #ece2d0 55%, #e4d8c6 100%);
+  background-attachment: fixed;
 }
 
 :root[data-theme='dark'] html,
@@ -77,6 +78,7 @@ html[data-theme='dark'] {
       transparent 24%
     ),
     linear-gradient(180deg, #07131a 0%, #0b1820 55%, #111f28 100%);
+  background-attachment: fixed;
 }
 
 body,
@@ -122,6 +124,8 @@ textarea:focus {
   margin: 0 auto;
   padding: 0 0 calc(116px + env(safe-area-inset-bottom));
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
   /* Mobile best practice: account for notched devices */
   padding-left: max(0, env(safe-area-inset-left));
   padding-right: max(0, env(safe-area-inset-right));
@@ -296,6 +300,7 @@ textarea:focus {
 .home-page {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 /* Weather atmosphere: two radial blobs tinting the page background.
