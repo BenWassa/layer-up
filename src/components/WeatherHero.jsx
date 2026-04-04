@@ -85,12 +85,21 @@ export function WeatherHero({ weather, unit }) {
         </span>
       </div>
 
-      <div className="weather-hero-meta">
-        <span>{weatherDesc(weather.weatherCode)}</span>
-        <span className="weather-hero-sep" aria-hidden="true">·</span>
-        <span>{weather.humidity}% humidity</span>
-        <span className="weather-hero-sep" aria-hidden="true">·</span>
-        <span>{metricLabel} {metricValue}</span>
+      <div className="weather-hero-stats">
+        <div className="weather-hero-stat">
+          <span className="weather-hero-stat-icon" aria-hidden="true">🌤</span>
+          <span className="weather-hero-stat-value">{weatherDesc(weather.weatherCode)}</span>
+        </div>
+        <div className="weather-hero-stat">
+          <span className="weather-hero-stat-icon" aria-hidden="true">💧</span>
+          <span className="weather-hero-stat-value">{weather.humidity}%</span>
+          <span className="weather-hero-stat-label">humidity</span>
+        </div>
+        <div className="weather-hero-stat">
+          <span className="weather-hero-stat-icon" aria-hidden="true">{precipValue ? '🌧' : '💨'}</span>
+          <span className="weather-hero-stat-value">{metricValue}</span>
+          <span className="weather-hero-stat-label">{metricLabel.toLowerCase()}</span>
+        </div>
       </div>
     </div>
   );

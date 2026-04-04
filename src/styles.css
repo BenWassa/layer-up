@@ -339,8 +339,8 @@ textarea:focus {
 /* Weather hero card — single large glassmorphic panel */
 .weather-hero-card {
   display: grid;
-  gap: 16px;
-  padding: 24px 22px 20px;
+  gap: 0;
+  padding: 22px 22px 20px;
   border-radius: var(--radius-xl);
   border: 1px solid var(--line);
   background:
@@ -361,6 +361,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 18px;
 }
 
 .weather-hero-location {
@@ -378,44 +379,73 @@ textarea:focus {
 }
 
 .weather-hero-icon {
-  font-size: 1.6rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
 .weather-hero-center {
   display: flex;
-  align-items: baseline;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
 }
 
 .weather-hero-temp {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(3rem, 14vw, 4rem);
-  line-height: 0.9;
+  font-size: clamp(4rem, 18vw, 5.5rem);
+  line-height: 0.88;
   letter-spacing: -0.04em;
 }
 
 .weather-hero-feels {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
-.weather-hero-meta {
-  display: flex;
-  align-items: center;
+.weather-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  flex-wrap: wrap;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-soft);
-  padding-top: 4px;
+  padding-top: 18px;
   border-top: 1px solid var(--line);
 }
 
-.weather-hero-sep {
-  color: var(--line-strong);
+.weather-hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+:root[data-theme='dark'] .weather-hero-stat {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.weather-hero-stat-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.weather-hero-stat-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.weather-hero-stat-label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
 
 /* Layer plan — full-width frosted card */
